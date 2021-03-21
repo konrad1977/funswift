@@ -1,5 +1,5 @@
 import XCTest
-@testable import funswift
+@testable import Funswift
 
 final class funswiftTests: XCTestCase {
 

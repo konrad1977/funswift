@@ -4,12 +4,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "funswift",
+    name: "Funswift",
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "funswift",
-            targets: ["funswift"]),
+            name: "Funswift",
+            targets: ["Funswift"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -19,10 +19,10 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "funswift",
+            name: "Funswift",
             dependencies: []),
         .testTarget(
-            name: "funswiftTests",
-            dependencies: ["funswift"]),
+            name: "FunswiftTests",
+            dependencies: ["Funswift"]),
     ]
 )
