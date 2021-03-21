@@ -9,13 +9,16 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Funswift",
-            targets: ["Funswift"]),
+            targets: ["Funswift"]
+		),
     ],
     dependencies: [],
     targets: [
         .target(
             name: "Funswift",
-            dependencies: []),
+            dependencies: [],
+			exclude: ["Playground"]
+		),
         .testTarget(
             name: "FunswiftTests",
             dependencies: ["Funswift"]),
