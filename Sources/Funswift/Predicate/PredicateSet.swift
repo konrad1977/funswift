@@ -9,6 +9,10 @@ import Foundation
 
 public struct Predicate<A> {
 	public let contains: (A) -> Bool
+
+	public init (contains: @escaping (A) -> Bool) {
+		self.contains = contains
+	}
 }
 
 // MARK:- anyOf
