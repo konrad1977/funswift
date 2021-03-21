@@ -23,13 +23,10 @@ public struct IO<A> {
 		IO<B> { f(self.unsafeRun()).unsafeRun() }
 	}
 }
+
 extension IO {
 
-    public init(_ work: @autoclosure @escaping () -> A) {
-        self.unsafeRun = work
-    }
-
-    public static func pure<A>(_ value: A) -> IO<A> {
+    public static func pure(_ value: A) -> IO<A> {
 		IO<A> { value }
 	}
 }

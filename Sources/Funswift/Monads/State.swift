@@ -9,7 +9,7 @@ import Foundation
 
 public struct State<S, A> {
 	
-	let runState: (S) -> (A, S)
+	public let runState: (S) -> (A, S)
 
 	public init(_ f: @escaping (S) -> (A, S)) {
 		self.runState = f
@@ -34,7 +34,7 @@ public struct State<S, A> {
 		}
 	}
 
-	public func flatmap<B>(_ f: @escaping (A) -> State<S, B>) -> State<S, B> {
+	public func flatMap<B>(_ f: @escaping (A) -> State<S, B>) -> State<S, B> {
 		State<S, B> { state in
 			let (value, previousState) = run(state: state)
 			return f(value).run(state: previousState)

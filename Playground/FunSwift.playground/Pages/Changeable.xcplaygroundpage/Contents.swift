@@ -1,3 +1,5 @@
+//: [Previous](@previous)
+
 import Foundation
 import Funswift
 
@@ -16,3 +18,5 @@ let changeablePerson =
 changeablePerson.hasChanges
 	? print("Was changed")
 	: print("Nothing was changed")
+
+//: [Next](@next)

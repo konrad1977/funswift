@@ -8,6 +8,7 @@
 import Foundation
 
 public struct Reader<Environment, Output> {
+	
     public let run: (Environment) -> Output
 
     public init(run: @escaping (Environment) -> Output) {
