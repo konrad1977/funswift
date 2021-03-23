@@ -25,6 +25,18 @@ public struct Changeable<A> {
         self.value = value
         self.hasChanges = hasChanges
     }
+
+    public func write<Value: Equatable>(
+        _ newValue: Value, at keyPath: WritableKeyPath<A, Value>
+    ) -> Changeable<A> {
+
+        guard newValue != value[keyPath: keyPath]
+        else { return Changeable(value: value, hasChanges: false) }
+
+        var copy = value
+        copy[keyPath: keyPath] = newValue
+        return Changeable(value: copy, hasChanges: true)
+    }
 }
 
 public func flatMap<A, B>(
