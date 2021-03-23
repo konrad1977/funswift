@@ -34,7 +34,8 @@ public func flatMap<A, B>(
 }
 
 public func write<Value: Equatable, Root>(
-	_ value: Value, at keyPath: WritableKeyPath<Root, Value>
+	_ value: Value,
+	at keyPath: WritableKeyPath<Root, Value>
 ) -> (Root) -> Changeable<Root> {
 	return { root in
 
