@@ -39,7 +39,3 @@ extension Writer {
         return { a in Writer(value: a, output: m) }
     }
 }
-
-public func pure<A, M>(_ value: A) -> Writer<A, M> {
-	Writer(value: value, output: M.empty)
-}

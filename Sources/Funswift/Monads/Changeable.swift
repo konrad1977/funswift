@@ -13,17 +13,12 @@ public struct Changeable<A> {
     public let hasChanges: Bool
 
     public func map<B>(_ f: @escaping (A) -> B) -> Changeable<B> {
-        Changeable<B>(value: f(value), hasChanges: true)
+		Changeable<B>(value: f(value), hasChanges: hasChanges)
     }
 
     public func flatMap<B>(_ f: @escaping (A) -> Changeable<B>) -> Changeable<B> {
         let result = f(value)
         return Changeable<B>(value: result.value, hasChanges: result.hasChanges || hasChanges)
-    }
-
-    public init(value: A, hasChanges: Bool) {
-        self.value = value
-        self.hasChanges = hasChanges
     }
 
     public func write<Value: Equatable>(
@@ -37,6 +32,16 @@ public struct Changeable<A> {
         copy[keyPath: keyPath] = newValue
         return Changeable(value: copy, hasChanges: true)
     }
+
+	public init(value: A, hasChanges: Bool) {
+		self.value = value
+		self.hasChanges = hasChanges
+	}
+
+	public init(_ value: A) {
+		self.value = value
+		self.hasChanges = false
+	}
 }
 
 public func flatMap<A, B>(

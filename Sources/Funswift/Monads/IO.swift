@@ -25,15 +25,9 @@ public struct IO<A> {
 }
 
 extension IO {
-
-    public static func pure(_ value: A) -> IO<A> {
-		IO<A> { value }
+	public static func pure(_ value: A) -> IO<A> {
+		IO { value }
 	}
-}
-
-// MARK: - Pure IO<A>
-public func pure<A>(_ value: A) -> IO<A> {
-	IO<A> { value }
 }
 
 // MARK: - Zip

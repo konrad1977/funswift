@@ -3,7 +3,7 @@ import XCTest
 
 final class IOTests: XCTestCase {
 
-	func testMapIO() {
+	func testMap() {
 
 		let result = IO<Int> { 10 }
 			.map(String.init)
@@ -12,7 +12,7 @@ final class IOTests: XCTestCase {
 		XCTAssertEqual("10", result)
 	}
 
-	func testFlatMapIO() {
+	func testFlatMap() {
 
 		let multiplyWithHundred: (Int) -> IO<Int> = { number in IO { number * 100 } }
 
@@ -25,7 +25,7 @@ final class IOTests: XCTestCase {
 		XCTAssertEqual(10000000, result)
 	}
 
-	func testBindIO() {
+	func testBind() {
 
 		let multiplyWithHundred: (Int) -> IO<Int> = { number in IO { number * 100 } }
 
@@ -37,19 +37,19 @@ final class IOTests: XCTestCase {
 		XCTAssertEqual(10000000, result.unsafeRun())
 	}
 
-	func testPureIO() {
+	func testPure() {
 		let result = pure(10).unsafeRun()
 		XCTAssertEqual(10, result)
 
-		let resultB = IO.pure(100).unsafeRun()
+		let resultB = pure(100).unsafeRun()
 		XCTAssertEqual(100, resultB)
 	}
 
-	func testZipIO() {
+	func testZip() {
 
 		let result = zip(
 			pure(10),
-			IO.pure(100.0),
+			pure(100.0),
 			IO { 20 },
 			IO { "Hello world" },
 			IO { "Boom" }

@@ -3,7 +3,7 @@ import XCTest
 
 final class PredicateTests: XCTestCase {
 
-	func testEmptyReturningPredicates() {
+	func testEmptyReturning() {
 
 		let alwaysTrue = Predicate<Int> { _ in true }
 		let alwaysFalse = Predicate<Int> { _ in false }

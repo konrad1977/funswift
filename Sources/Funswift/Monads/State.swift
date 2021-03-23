@@ -49,7 +49,3 @@ public struct State<S, A> {
 		State<S, Void> { _ in ((), state) }
 	}
 }
-
-public func pure<A, S>(value: A) -> State<S, A> {
-	State(initial: value)
-}

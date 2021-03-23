@@ -41,7 +41,7 @@ public struct Deferred<A> {
 extension Deferred {
 	
 	public static func delayed(by interval: TimeInterval, work: @escaping () -> A ) -> Deferred {
-		return .init { callback in
+		return Deferred { callback in
 			DispatchQueue.global().asyncAfter(deadline: .now() + interval) {
 				callback(work())
 			}
@@ -49,13 +49,15 @@ extension Deferred {
 	}
 }
 
+extension Deferred {
+	public static func pure(_ value: A) -> Deferred<A> {
+		Deferred(value)
+	}
+}
+
 // MARK:- IO -> Deferred<A>
 public func deferred<A>(_ io: IO<A>) -> Deferred<A> {
 	Deferred(io.unsafeRun())
-}
-
-public func pure<A>(_ value: A) -> Deferred<A> {
-	Deferred(value)
 }
 
 public func zip<A, B>(

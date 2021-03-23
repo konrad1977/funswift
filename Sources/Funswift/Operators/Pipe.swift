@@ -8,6 +8,7 @@
 // MARK:- Pipe
 precedencegroup Pipe { associativity: left }
 infix operator |>: Pipe
+
 public func |><A, B>(
 	_ value: A,
 	_ f: @escaping (A) -> B
