@@ -10,6 +10,11 @@ import Foundation
 // MARK: - onSuccess / onFailure
 extension Result {
 
+	/**
+	A faster way of getting the succes out and it can be chained.
+	- parameter f: A function that includes the succes(ed) value.
+	- returns: Self
+	*/
 	public func onSuccess(_ f: (Success) -> Void) -> Self {
 		guard case let .success(value) = self
 		else { return self }
@@ -17,6 +22,11 @@ extension Result {
 		return self
 	}
 
+	/**
+	A faster way of getting the failure out and it can be chained.
+	- parameter f: A function that includes the Failure/Error.
+	- returns: Self
+	*/
 	public func onFailure(_ f: (Failure) -> Void) -> Self {
 		guard case let .failure(value) = self
 		else { return self }
@@ -25,24 +35,19 @@ extension Result {
 	}
 }
 
-// MARK: - Concat
-extension Result {
-	public func concat<NewSuccess>(_ lhs: Result<NewSuccess, Failure>) -> Result<(Success, NewSuccess), Error> {
-		switch (self, lhs) {
-		case let (.success(first), .success(second)):
-			return .success((first, second))
-		case let (.failure(error), .success):
-			return .failure(error)
-		case let (.success, .failure(error)):
-			return .failure(error)
-		case let (.failure(firstError), .failure):
-			return .failure(firstError)
-		}
-	}
+
+// MARK: - Pure IO<A>
+/**
+Pure that lifts a generic type to Result
+- parameter value: Value that should be lifted
+- returns: Result<value, Error>
+*/
+
+public func pure<A>(_ value: A) -> Result<A, Error> {
+	.success(value)
 }
 
-
-func zip<A, B, ErrorType: Error>(
+public func zip<A, B, ErrorType: Error>(
 	_ lhs: Result<A, ErrorType>,
 	_ rhs: Result<B, ErrorType>)
 -> Result<(A, B), ErrorType> {
@@ -155,4 +160,11 @@ public func zip<A, B, C, D, E, F, G, H, I, J, ErrorType: Error>(
 ) -> Result<(A, B, C, D, E, F, G, H, I, J), ErrorType> {
 	zip(first, zip(second, third, forth, fifth, sixth, seventh, eigth, ninth, tenth))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4, $1.5, $1.6, $1.7, $1.8) }
+}
+
+// MARK: - Concat
+extension Result where Failure: Error {
+	public func concat<NewSuccess>(_ lhs: Result<NewSuccess, Failure>) -> Result<(Success, NewSuccess), Failure> {
+		zip(self, lhs)
+	}
 }

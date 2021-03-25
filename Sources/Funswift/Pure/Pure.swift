@@ -31,8 +31,3 @@ public func pure<A, M: Monoid>(value: A) -> Writer<A, M> {
 public func pure<A>(_ value: A) -> IO<A> {
 	IO<A> { value }
 }
-
-// MARK: - Pure IO<A>
-public func pure<A, E: Error>(_ value: A) -> Result<A, E> {
-	.success(value)
-}
