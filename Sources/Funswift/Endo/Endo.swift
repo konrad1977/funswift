@@ -15,4 +15,3 @@ extension Endo: Semigroup {
         return Endo { rhs.call(lhs.call($0)) }
     }
 }
-

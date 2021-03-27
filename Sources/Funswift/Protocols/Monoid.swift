@@ -19,3 +19,7 @@ extension Bool: Monoid {
 public func concat<M: Monoid>(_ lhs: [M]) -> M {
 	lhs.reduce(M.empty, +)
 }
+
+public func concat<M: Monoid>(_ lhs: M...) -> M {
+	lhs.reduce(M.empty, +)
+}

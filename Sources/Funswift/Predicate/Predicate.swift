@@ -15,7 +15,9 @@ public struct Predicate<A> {
 		self.contains = contains
 	}
 
-	public func contraMap<B>(_ f: @escaping (B) -> A) -> Predicate<B> {
+	public func contraMap<B>(
+		_ f: @escaping (B) -> A
+	) -> Predicate<B> {
 		Predicate<B> { self.contains(f($0)) }
 	}
 }

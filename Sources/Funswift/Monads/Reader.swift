@@ -15,15 +15,21 @@ public struct Reader<Environment, Output> {
         self.run = run
     }
 
-    public func map<B>(_ f: @escaping (Output) -> B) -> Reader<Environment, B> {
+    public func map<B>(
+		_ f: @escaping (Output) -> B
+	) -> Reader<Environment, B> {
         Reader<Environment, B> { r in f(self.run(r)) }
     }
 
-	public func contraMap<B>( _ f: @escaping (B) -> Environment) -> Reader<B, Output> {
-		Reader<B, Output> { b in self.run(f(b)) }
+	public func contraMap<EnvironmentB>(
+		_ f: @escaping (EnvironmentB) -> Environment
+	) -> Reader<EnvironmentB, Output> {
+		Reader<EnvironmentB, Output> { b in self.run(f(b)) }
 	}
 
-    public func flatMap<B>(_ f: @escaping (Output) -> Reader<Environment, B>) -> Reader<Environment, B> {
+    public func flatMap<B>(
+		_ f: @escaping (Output) -> Reader<Environment, B>
+	) -> Reader<Environment, B> {
         Reader<Environment, B> { r in f(self.run(r)).run(r) }
     }
 }

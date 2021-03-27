@@ -17,11 +17,16 @@ public struct Writer<A, M: Monoid> {
         self.output = output
     }
 
-    public func map<B>(_ f: @escaping (A) -> B) -> Writer<B, M> {
+    public func map<B>(
+		_ f: @escaping (A) -> B
+	) -> Writer<B, M> {
         Writer<B, M>(value: f(value), output: output)
     }
 
-    public func flatMap<B>(_ f: @escaping (A) -> Writer<B, M>) -> Writer<B, M> {
+    public func flatMap<B>(
+		_ f: @escaping (A) -> Writer<B, M>
+	) -> Writer<B, M> {
+
         let writer = f(value)
         return Writer<B, M>(value: writer.value, output: output + writer.output)
     }

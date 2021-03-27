@@ -4,5 +4,6 @@
         <page name='IO'/>
         <page name='Changeable'/>
         <page name='ResultAdditions'/>
+        <page name='Reader'/>
     </pages>
 </playground>
