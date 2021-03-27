@@ -4,8 +4,13 @@ public protocol Semigroup {
     static func + (_ lhs: Self, _ rhs: Self) -> Self
 }
 
-extension Int: Semigroup { }
+//extension Int: Semigroup { }
+//extension Double: Semigroup {}
+extension Numeric where Self: Semigroup {}
+
 extension String: Semigroup {}
+extension String.SubSequence: Semigroup { }
+
 extension Array: Semigroup {}
 
 extension Bool: Semigroup {
