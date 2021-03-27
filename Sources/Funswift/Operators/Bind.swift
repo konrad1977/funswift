@@ -1,7 +1,11 @@
 import Foundation
 
 // MARK: - Bind operator
-precedencegroup Bind { associativity: left higherThan: Pipe }
+precedencegroup Bind {
+	associativity: left
+	higherThan: Pipe, Fish
+}
+
 infix operator >>-: Bind
 
 // MARK: - Optionals

@@ -21,7 +21,6 @@ func toString(value: Int) -> Result<String, String> {
 	.success(String(value))
 }
 
-
 validate(value: 1)
 	.flatMap(multiplyByTen)
 	.flatMap(toString)
