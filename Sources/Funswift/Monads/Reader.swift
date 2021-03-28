@@ -32,6 +32,10 @@ public struct Reader<Environment, Output> {
 	) -> Reader<Environment, B> {
         Reader<Environment, B> { r in f(self.run(r)).run(r) }
     }
+
+	public func apply(_ environment: Environment) -> Output {
+		self.run(environment)
+	}
 }
 
 public func zip<Environment, A, B>(
