@@ -25,9 +25,29 @@ public struct IO<A> {
 }
 
 extension IO {
+
 	public static func pure(_ value: A) -> IO<A> {
 		IO { value }
 	}
+
+    public init(deferred: Deferred<A>) {
+        self.init {
+
+            let dispatchGroup = DispatchGroup()
+            let queue = DispatchQueue(label: "funswift.deferred.queue")
+            var result: A?
+
+            dispatchGroup.enter()
+            queue.async(group: dispatchGroup) {
+                deferred.run { deferredResult in
+                    result = deferredResult
+                    dispatchGroup.leave()
+                }
+            }
+            dispatchGroup.wait()
+            return result!
+        }
+    }
 }
 
 // MARK: - Zip

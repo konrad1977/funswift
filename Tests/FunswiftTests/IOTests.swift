@@ -214,6 +214,21 @@ final class IOTests: XCTestCase {
 		XCTAssertEqual(Person(name: "Jane"), result.7)
 		XCTAssertEqual(CGRect(x: 1, y: 2, width: 200, height: 100), result.8)
 		XCTAssertEqual(String.SubSequence("Hello"), result.9)
-
 	}
+
+    func testInitFromDeferred() {
+        let delayedDeferred = Deferred.delayed(by: 2) { 10 }
+        let result = IO(deferred: delayedDeferred).unsafeRun()
+        XCTAssertEqual(10, result)
+    }
+
+    func testIODeferredZip() {
+        let delayedDeferred = Deferred.delayed(by: 2) { 10 }
+        let result = zip(
+            IO(deferred: delayedDeferred),
+            IO(deferred: delayedDeferred)
+        ).unsafeRun()
+        XCTAssertEqual(10, result.0)
+        XCTAssertEqual(10, result.1)
+    }
 }
