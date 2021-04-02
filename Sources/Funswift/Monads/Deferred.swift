@@ -39,25 +39,22 @@ public struct Deferred<A> {
 }
 
 extension Deferred {
-	
+
+    public init(io: IO<A>) {
+        self.init(io.unsafeRun())
+    }
+
 	public static func delayed(by interval: TimeInterval, work: @escaping () -> A ) -> Deferred {
-		return Deferred { callback in
+		Deferred { callback in
 			DispatchQueue.global().asyncAfter(deadline: .now() + interval) {
-				callback(work())
+                callback(work())
 			}
 		}
 	}
-}
 
-extension Deferred {
 	public static func pure(_ value: A) -> Deferred<A> {
 		Deferred(value)
 	}
-}
-
-// MARK:- IO -> Deferred<A>
-public func deferred<A>(_ io: IO<A>) -> Deferred<A> {
-	Deferred(io.unsafeRun())
 }
 
 public func zip<A, B>(
@@ -83,8 +80,6 @@ public func zip<A, B>(
             b = resultB
             dispatchGroup.leave()
         }
-
-		dispatchGroup.wait()
 
         dispatchGroup.notify(queue: queue) {
             if let a = a, let b = b {

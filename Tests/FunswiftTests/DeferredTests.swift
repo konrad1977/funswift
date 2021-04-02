@@ -51,4 +51,21 @@ final class DeferredTests: XCTestCase {
 		}
 		wait(for: [expectation], timeout: 3.1)
 	}
+
+    func testInitFromIO() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = zip(
+            Deferred { $0(10) },
+            Deferred(io: IO { 10 })
+        )
+
+        result.run { first, second in
+            XCTAssertEqual(10, first)
+            XCTAssertEqual(10, second)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.2)
+    }
 }
