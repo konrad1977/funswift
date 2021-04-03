@@ -63,6 +63,13 @@ Our goal is to have tests and a high codecoverage. If you find bugs - please rep
 
 In functional languages its very common to have functions that takes one value and returns a value. Functions that takes several values are often curried so they can be partially applied. Funswift has some overloads of curry to help out with that.
 
+***Example of currying.*** 
+
+```swift
+func takesTwo(first: Int, second: Int) -> Int // (Int, Int) -> Int
+curry(takesTwo) // (Int) -> (Int) -> Int
+```
+
 ##### Extended swift types
 
 \- `Result`
@@ -91,14 +98,19 @@ All monads produces a value, and they are all Covariant on their outputs. Some l
 
 In pure functional languages like Haskell its impossible to have an effect without using monads. An effect can be reading from input, disk, network or anything else outside your control. An easy way of dealing with effects is to wrap a value inside an `IO`-monad. `IO` allows manipulating effects, transform (`map`), and chain (bind, `flatmap`, `>>-`) them. IO is also lazy which is also another important aspect of functional programming. To run an IO-effect you need to call `unsafeRun()` . 
 
+```swift
+let lazyHelloWorld = IO<String> { "hello world" }
+lazyHelloWorld.unsafeRun() // "hello world"
+```
+
 ### Deferred
 
 Sometimes you don't know when the code is done executing and you dont want to block the main thread. Then Deferred is here to the rescue. Deferred is often called *Future/Promise* in some languages. Its a functional pattern of handling async code. To get the value out of a Deferred you need to run it. Its lazy as IO but the main different is that it wont block the thread while you are waiting it to complete. Its not unusual to see people trying to synchronize async code with DispatchGroups which very often leads to unclear and messy code. It also has the downside that it cannot be tranformed or chained easily. Deferred also ads the ability to chain (`flatMap`, `>>-`), and transform (`map`) which makes the code cleaner, easier to understand and easier to reuse. 
 
 ### Credits
 
-If you like the Functional Programming style and don't really know where to start. I can hightly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
+If you like the Functional Programming style and don't really know where to start. I can highly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
 
 Functional Programming in the excellent [book](https://www.objc.io/books/functional-swift/) by objc.io. 
 
-I also recommend just searching on the internet to get more information about a specific monad to deeper your understanding of it. 
+I also recommend just searching on the internet to get more information about a specific monad to deeper your understanding of it. Haskell Wiki is a great source of information.
