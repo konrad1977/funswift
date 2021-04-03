@@ -12,7 +12,7 @@ Our goal is to have tests and a high codecoverage. If you find bugs - please rep
 # Whats included
 
 ##### Monads
-- `IO`
+- [IO](#io-monad)
 - `Deferred`
 - `Reader`
 - `Writer`
@@ -48,3 +48,14 @@ Funswift is not all about monads but its our main focus. They solve some specifi
 
 ##### IO Monad
 In pure functional languages like Haskell its impossible to have effect without using monads. An effect can be reading from input, disk, network and its something you're not in fully control of. One of the easiest way is to wrap the effect inside a `IO`-monad. `IO` lets to safetly manipulate effects, transform (`map`), and chain (bind, `flatmap`, `>>-`) them. IO is completely lazy, its not until you call `unsafeRun()` it will execute (in sequence) and return a result.
+
+##### Credits
+
+If you like the Functional Programming style and don't really know where to start. I can hightly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
+
+Functional Programming in the excellent [book](https://www.objc.io/books/functional-swift/) by objc.io. 
+
+I also recommend just searching on the internet to get more information about a specific monad to deeper your understanding of it. 
+
+Haskell Wiki pages is a fantastic source of information. 
+
