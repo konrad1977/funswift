@@ -15,6 +15,21 @@ Our goal is to have tests and a high codecoverage. If you find bugs - please rep
 ![](https://img.shields.io/github/license/konrad1977/funswift) ![](https://img.shields.io/github/languages/top/konrad1977/funswift)
 
 
+
+## Installation
+
+```swift
+import PackageDescription
+
+let package = Package(
+  dependencies: [
+    .package(url: "https://github.com/konrad1977/funswift", .branch("main")),
+  ]
+)
+```
+
+
+
 ## Whats included
 
 ### Monads
@@ -75,11 +90,8 @@ curry(takesTwo) // (Int) -> (Int) -> Int
 \- `Result`
 
 - zip
-
 - onSuccess   
-
 - onFailure
-
 - concat
 
 ### Why focus on monads?
