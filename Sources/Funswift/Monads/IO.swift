@@ -24,6 +24,12 @@ public struct IO<A> {
 	}
 }
 
+extension IO: Equatable where A: Equatable {
+	public static func == (lhs: IO<A>, rhs: IO<A>) -> Bool {
+		lhs.unsafeRun() == rhs.unsafeRun()
+	}
+}
+
 extension IO {
 
 	public static func pure(_ value: A) -> IO<A> {
