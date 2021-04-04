@@ -68,31 +68,23 @@ let package = Package(
 
 \- `|>`  Pipe
 
-#### Protocols
+### Semigroup protocol
 
-\- `Monoid`
-
-\- `Semigroup`
-
-#### Helpers
-
-In functional languages its very common to have functions that takes one value and returns a value. Functions that takes several values are often curried so they can be partially applied. Funswift has some overloads of curry to help out with that.
-
-***Example of currying.*** 
+Allows sets/types to be concatinated by using the + operator. 
 
 ```swift
-func takesTwo(first: Int, second: Int) -> Int // (Int, Int) -> Int
-curry(takesTwo) // (Int) -> (Int) -> Int
+extension String: Semigroup {}
+"Hello " + "world" // Hello world
+
+extension Array: Semigroup {}
+[object] + [anotherObject] // [object, anotherObject]
 ```
 
-##### Extended swift types
+This allows us to use Semigroup protocol instead where we want to concatinate objects, we added generalization we no longer need to work with concrete types. Semigroup always returns the same type. So if we do A + A = A
 
-\- `Result`
+### Monoid protocol
 
-- zip
-- onSuccess   
-- onFailure
-- concat
+Monoid inherits from Semigroup but adds the posibility to be empty/return an empty object. For instance an empty string  "" or an empty array [].
 
 ### Why focus on monads?
 
@@ -118,6 +110,34 @@ lazyHelloWorld.unsafeRun() // "hello world"
 ### Deferred
 
 Sometimes you don't know when the code is done executing and you dont want to block the main thread. Then Deferred is here to the rescue. Deferred is often called *Future/Promise* in some languages. Its a functional pattern of handling async code. To get the value out of a Deferred you need to run it. Its lazy as IO but the main different is that it wont block the thread while you are waiting it to complete. Its not unusual to see people trying to synchronize async code with DispatchGroups which very often leads to unclear and messy code. It also has the downside that it cannot be tranformed or chained easily. Deferred also ads the ability to chain (`flatMap`, `>>-`), and transform (`map`) which makes the code cleaner, easier to understand and easier to reuse. 
+
+#### Curry
+
+In functional languages its very common to have functions that takes one value and returns a value. Functions that takes several values are often curried so they can be partially applied. Funswift has some overloads of curry to help out with that.
+
+***Example of currying.*** 
+
+```swift
+func takesTwo(first: Int, second: Int) -> Int // (Int, Int) -> Int
+curry(takesTwo) // (Int) -> (Int) -> Int
+```
+
+### Swift.Result extensions
+
+Apple added Result to Swift version 5.0. But it felt like we had this for years. Funswift adds even more functionality to it by adding `zip`, `concat`, `onSuccess` and `onFailure`.
+
+```swift
+func validate(username: String) -> Result<String, Error> { ... }
+func validate(password: String) -> Result<String, Error> { ... }
+
+zip(
+	validate(username: "Jane"),
+  validate(password: "Doe")
+)
+.map(Person.init)
+.onSuccess(showSuccess)
+.onFailure(showValidationError)
+```
 
 ### Credits
 
