@@ -147,6 +147,12 @@ zip(
 .onFailure(showValidationError)
 ```
 
+
+
+#### Projects that is using funswift
+
+[Project Explorer (CLI tool for analysing source files)](https://github.com/konrad1977/ProjectExplorer)
+
 ### Credits
 
 - If you like the Functional Programming style and don't really know where to start. I can highly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
