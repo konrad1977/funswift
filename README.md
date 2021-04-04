@@ -32,6 +32,14 @@ let package = Package(
 
 ## Whats included
 
+##### Playground
+
+I've added Playground pages where you can poke around and try some of the feature set of funswift. 
+
+##### Tests
+
+My goal is to provide tests for all the [monad laws](https://wiki.haskell.org/Monad_laws) and [functor laws](https://wiki.haskell.org/Functor). Right now I am aiming for 100% Codecoverage.
+
 ### Monads
 
 \- [IO](#IO)
@@ -88,7 +96,7 @@ Monoid inherits from Semigroup but adds the posibility to be empty/return an emp
 
 ### Why focus on monads?
 
-Funswift is not all about monads but its our main focus. They solve some specific problems and make life easier as a developer no matter if you prefeer imperative or functional style. And swift is already full of monads, like `string`, `SubString`, `Array` (sequenses), `Optional`, `Result`.
+Funswift is not all about monads but its my main focus. They solve some specific problems and make life easier as a developer no matter if you prefeer imperative or functional style. And swift is already full of monads, like `string`, `SubString`, `Array` (sequenses), `Optional` and `Result`.
 
 #### Some common features of all the monads in the funswift.
 
@@ -131,7 +139,7 @@ func validate(username: String) -> Result<String, Error> { ... }
 func validate(password: String) -> Result<String, Error> { ... }
 
 zip(
-	validate(username: "Jane"),
+  validate(username: "Jane"),
   validate(password: "Doe")
 )
 .map(Person.init)
