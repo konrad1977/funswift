@@ -153,8 +153,9 @@ zip(
 
 - [Category Theory for programmers](https://github.com/hmemcpy/milewski-ctfp-pdf)
 
-  Bartosz excellent book which is available for free. Its been a huge inspiration, and some time mind bending to read. 
+  Bartosz excellent book which is available for free. Its been a huge inspiration, and some times mind bending to read. 
 
-- Functional Programming in the excellent [book](https://www.objc.io/books/functional-swift/) by objc.io. 
+- Objc.io [Functional Swift](https://www.objc.io/books/functional-swift/)
 
 I also recommend just searching on the internet to get more information about a specific monad to deeper your understanding of it. [Haskell Wiki](https://wiki.haskell.org/All_About_Monads) is a great source of information.
+
