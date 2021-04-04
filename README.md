@@ -153,6 +153,10 @@ zip(
 
 [Project Explorer (CLI tool for analysing source files)](https://github.com/konrad1977/ProjectExplorer)
 
+[CodeAnalyser (Engine of Project Explorer)](https://github.com/konrad1977/CodeAnalyser)
+
+The CodeAnalyser library uses IO-monad or Deferred-monad for almost everything. Its extremly fast and can analyse 200 000 lines of code per second depending on your hardware. (230 000 / sec on my 2013 MacBook Pro)
+
 ### Credits
 
 - If you like the Functional Programming style and don't really know where to start. I can highly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
