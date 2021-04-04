@@ -4,17 +4,9 @@ A tiny package full of functional tools that you can use in your apps
 
 !["Logo"](https://github.com/konrad1977/funswift/blob/main/Images/logo.png)
 
-
-
-Funswift includes several playground pages so you can see how a specific functionality can be used. Some of the types can be used in many different situations and we cannot cover them all. 
-
-Our goal is to have tests and a high codecoverage. If you find bugs - please report it in the issues or even better do a Pull Request.
-
-
+One of the goals is to have a very high codecoverage. If you find bugs - please report it in the issues or even better do a Pull Request.
 
 ![](https://img.shields.io/github/license/konrad1977/funswift) ![](https://img.shields.io/github/languages/top/konrad1977/funswift)
-
-
 
 ## Installation
 
@@ -28,13 +20,11 @@ let package = Package(
 )
 ```
 
-
-
 ## Whats included
 
 ##### Playground
 
-I've added Playground pages where you can poke around and try some of the feature set of funswift. 
+I've added Playground pages where you can poke around and try some of the feature set of funswift. Just as the tests, the goal is to cover atleast most of the functionality.
 
 ##### Tests
 
