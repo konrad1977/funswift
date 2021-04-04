@@ -149,8 +149,12 @@ zip(
 
 ### Credits
 
-If you like the Functional Programming style and don't really know where to start. I can highly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
+- If you like the Functional Programming style and don't really know where to start. I can highly recommend the video series on Functional Programming in Swift by [Pointfree.co](https://www.pointfree.co). They inspired me to learn more about the subject and alot of their style and naming conventions can be found in funswift.
 
-Functional Programming in the excellent [book](https://www.objc.io/books/functional-swift/) by objc.io. 
+- [Category Theory for programmers](https://github.com/hmemcpy/milewski-ctfp-pdf)
 
-I also recommend just searching on the internet to get more information about a specific monad to deeper your understanding of it. Haskell Wiki is a great source of information.
+  Bartosz excellent book which is available for free. Its been a huge inspiration, and some time mind bending to read. 
+
+- Functional Programming in the excellent [book](https://www.objc.io/books/functional-swift/) by objc.io. 
+
+I also recommend just searching on the internet to get more information about a specific monad to deeper your understanding of it. [Haskell Wiki](https://wiki.haskell.org/All_About_Monads) is a great source of information.
