@@ -3,6 +3,12 @@ import XCTest
 
 final class IOTests: XCTestCase {
 
+    private func delayedInt(completion: @escaping (Int) -> Void) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
+            completion(101)
+        }
+    }
+
 	func testMap() {
 
 		let result = IO<Int> { 10 }
@@ -230,5 +236,10 @@ final class IOTests: XCTestCase {
         ).unsafeRun()
         XCTAssertEqual(10, result.0)
         XCTAssertEqual(10, result.1)
+    }
+
+    func testInitFromCallback() {
+        let result = IO(delayedInt(completion:)).unsafeRun()
+        XCTAssertEqual(101, result)
     }
 }
