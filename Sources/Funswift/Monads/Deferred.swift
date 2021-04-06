@@ -17,7 +17,7 @@ public struct Deferred<A> {
         self.run = run
     }
 
-	public init(_ work: @autoclosure @escaping () -> A) {
+    public init(_ work: @autoclosure @escaping () -> A) {
 		self = Deferred { callback in
 			DispatchQueue.global().async {
 				callback(work())
@@ -51,6 +51,10 @@ extension Deferred {
 			}
 		}
 	}
+
+    public static func delayed(by interval: TimeInterval, withIO io: IO<A>) -> Deferred {
+        Deferred.delayed(by: interval, work: io.unsafeRun)
+    }
 
 	public static func pure(_ value: A) -> Deferred<A> {
 		Deferred(value)

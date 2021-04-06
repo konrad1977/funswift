@@ -31,7 +31,7 @@ final class IOTests: XCTestCase {
 		XCTAssertEqual(10000000, result)
 	}
 
-	func testBind() {
+	func testBindOperator() {
 
 		let multiplyWithHundred: (Int) -> IO<Int> = { number in IO { number * 100 } }
 

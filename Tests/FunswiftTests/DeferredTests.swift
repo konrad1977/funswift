@@ -13,14 +13,44 @@ final class DeferredTests: XCTestCase {
 			XCTAssertEqual(10, value)
 			expectation.fulfill()
 		}
-		wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 1.1)
 	}
+
+    func testDelayedIO() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = Deferred.delayed(by: 1, withIO: IO { 10 })
+
+        result.run { value in
+            XCTAssertEqual(10, value)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.1)
+    }
+
+    func testInitFromIO() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = zip(
+            Deferred(10),
+            Deferred(io: IO { 10 })
+        )
+
+        result.run { first, second in
+            XCTAssertEqual(10, first)
+            XCTAssertEqual(10, second)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.2)
+    }
 
 	func testMap() {
 
 		let expectation = XCTestExpectation(description: "Waiting")
 
-		let result = Deferred { callback in callback(10) }
+		let result = Deferred(10)
 			.map(String.init)
 
 		result.run { value in
@@ -30,15 +60,70 @@ final class DeferredTests: XCTestCase {
 		wait(for: [expectation], timeout: 2)
 	}
 
-	func testZip() {
+    func testZip2() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = zip(
+            Deferred { $0(10) },
+            Deferred.delayed(by: 1) { "Hello world" }
+        )
+        result.run { first, second in
+            XCTAssertEqual(10, first)
+            XCTAssertEqual("Hello world", second)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.1)
+    }
+
+    func testZip3() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = zip(
+            Deferred { $0(10) },
+            Deferred.delayed(by: 1) { "Hello world" },
+            Deferred { $0(10.2) }
+        )
+        result.run { first, second, third in
+            XCTAssertEqual(10, first)
+            XCTAssertEqual("Hello world", second)
+            XCTAssertEqual(10.2, third)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.1)
+    }
+
+    func testZip4() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = zip(
+            Deferred { $0(10) },
+            Deferred.delayed(by: 1) { "Hello world" },
+            Deferred { $0(10.2) },
+            Deferred.delayed(by: 1) { URL.init(string: "http://www.google.com" ) }
+        )
+
+        result.run { first, second, third, forth in
+            XCTAssertEqual(10, first)
+            XCTAssertEqual("Hello world", second)
+            XCTAssertEqual(10.2, third)
+            XCTAssertNotNil(forth, "Shouldnt be nil")
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.1)
+    }
+
+	func testZip5() {
 
 		let expectation = XCTestExpectation(description: "Waiting")
 
 		let result = zip(
 			Deferred { $0(10) },
-			Deferred.delayed(by: 2) { 10 },
-			Deferred.delayed(by: 1) { 10.2 },
-			Deferred.delayed(by: 3) { "Hello world" },
+            Deferred.delayed(by: 0.7) { 10 },
+            Deferred.delayed(by: 0.5) { 10.2 },
+            Deferred.delayed(by: 0.9) { "Hello world" },
 			Deferred { $0("Hello Callback") }
 		)
 		result.run { first, second, third, forth, fifth in
@@ -49,23 +134,54 @@ final class DeferredTests: XCTestCase {
 			XCTAssertEqual("Hello Callback", fifth)
 			expectation.fulfill()
 		}
-		wait(for: [expectation], timeout: 3.1)
+		wait(for: [expectation], timeout: 1)
 	}
 
-    func testInitFromIO() {
+    func testZip6() {
 
         let expectation = XCTestExpectation(description: "Waiting")
 
         let result = zip(
             Deferred { $0(10) },
-            Deferred(io: IO { 10 })
+            Deferred.delayed(by: 0.3) { 10 },
+            Deferred.delayed(by: 0.2) { 10.2 },
+            Deferred.delayed(by: 0.3) { "Hello world" },
+            Deferred { $0("Hello Callback") },
+            Deferred(io: IO { 101 })
         )
-
-        result.run { first, second in
+        result.run { first, second, third, forth, fifth, sixth in
             XCTAssertEqual(10, first)
             XCTAssertEqual(10, second)
+            XCTAssertEqual(10.2, third)
+            XCTAssertEqual("Hello world", forth)
+            XCTAssertEqual("Hello Callback", fifth)
+            XCTAssertEqual(101, sixth)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 0.2)
+        wait(for: [expectation], timeout: 0.31)
+    }
+
+    func testZip7() {
+
+        let expectation = XCTestExpectation(description: "Waiting")
+
+        let result = zip(
+            Deferred { $0(10) },
+            Deferred.delayed(by: 0.2) { 10 },
+            Deferred.delayed(by: 0.3) { 10.2 },
+            Deferred.delayed(by: 0.5) { "Hello world" },
+            Deferred { $0("Hello Callback") },
+            Deferred(io: IO { 101 })
+        )
+        result.run { first, second, third, forth, fifth, sixth in
+            XCTAssertEqual(10, first)
+            XCTAssertEqual(10, second)
+            XCTAssertEqual(10.2, third)
+            XCTAssertEqual("Hello world", forth)
+            XCTAssertEqual("Hello Callback", fifth)
+            XCTAssertEqual(101, sixth)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.55)
     }
 }
