@@ -5,6 +5,6 @@
         <page name='Changeable'/>
         <page name='ResultAdditions'/>
         <page name='Reader'/>
-        <page name='ShowCase'/>
+        <page name='Deferred'/>
     </pages>
 </playground>
