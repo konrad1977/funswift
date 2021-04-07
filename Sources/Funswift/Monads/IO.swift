@@ -54,6 +54,10 @@ extension IO {
             return result!
         }
     }
+
+    public init(_ callback: @escaping (@escaping (A) -> Void) -> Void) {
+        self.init(deferred: Deferred(callback))
+    }
 }
 
 // MARK: - Zip
