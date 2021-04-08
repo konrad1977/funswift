@@ -42,7 +42,7 @@ public func <><A: AnyObject>(
 	}
 }
 
-public func <><A: Monoid>(
+public func <><A: Semigroup>(
 	_ lhs: A,
 	_ rhs: A
 ) -> A {
