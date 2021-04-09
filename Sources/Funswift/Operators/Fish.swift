@@ -14,9 +14,16 @@ infix operator >=>: Fish
 // MARK: - Optionals
 public func >=> <A, B, C>(
 	_ f: @escaping (A) -> B?,
-	_ g: @escaping (B) -> C
+	_ g: @escaping (B) -> C?
 ) -> (A) -> C? {
-	return { a in f(a).flatMap(g) }
+	return { f($0).flatMap(g) }
+}
+
+public func >=> <A, B, C>(
+    _ f: @escaping (A) -> B?,
+    _ g: @escaping (B) -> C
+) -> (A) -> C? {
+    return { f($0).map(g) }
 }
 
 // MARK: - Result
@@ -27,12 +34,26 @@ public func >=> <A, B, C>(
 	return { f($0).flatMap(g) }
 }
 
+public func >=> <A, B, C>(
+    _ f: @escaping (A) -> Result<B, Error>,
+    _ g: @escaping (B) -> C
+) -> (A) -> Result<C, Error> {
+    return { f($0).map(g) }
+}
+
 // MARK: - Changeable
 public func >=> <A, B, C>(
 	_ f: @escaping (A) -> Changeable<B>,
 	_ g: @escaping (B) -> Changeable<C>
 ) -> (A) -> Changeable<C> {
 	return { f($0).flatMap(g) }
+}
+
+public func >=> <A, B, C>(
+    _ f: @escaping (A) -> Changeable<B>,
+    _ g: @escaping (B) -> C
+) -> (A) -> Changeable<C> {
+    return { f($0).map(g) }
 }
 
 // MARK: - IO
@@ -43,12 +64,26 @@ public func >=> <A, B, C>(
 	return { f($0).flatMap(g) }
 }
 
+public func >=> <A, B, C>(
+    _ f: @escaping (A) -> IO<B>,
+    _ g: @escaping (B) -> C
+) -> (A) -> IO<C> {
+    return { f($0).map(g) }
+}
+
 // MARK: - Deferred
 public func >=> <A, B, C>(
 	_ f: @escaping (A) -> Deferred<B>,
 	_ g: @escaping (B) -> Deferred<C>
 ) -> (A) -> Deferred<C> {
 	return { f($0).flatMap(g) }
+}
+
+public func >=> <A, B, C>(
+    _ f: @escaping (A) -> Deferred<B>,
+    _ g: @escaping (B) -> C
+) -> (A) -> Deferred<C> {
+    return { f($0).map(g) }
 }
 
 // MARK: - Reader
@@ -59,6 +94,13 @@ public func >=> <A, B, C, Environment>(
 	return { f($0).flatMap(g) }
 }
 
+public func >=> <A, B, C, Environment>(
+    _ f: @escaping (A) -> Reader<Environment, B>,
+    _ g: @escaping (B) -> C
+) -> (A) -> Reader<Environment, C> {
+    return { f($0).map(g) }
+}
+
 // MARK: - Writer
 public func >=> <A, B, C, M: Monoid>(
 	_ f: @escaping (A) -> Writer<B, M>,
@@ -67,10 +109,24 @@ public func >=> <A, B, C, M: Monoid>(
 	return { f($0).flatMap(g) }
 }
 
+public func >=> <A, B, C, M: Monoid>(
+    _ f: @escaping (A) -> Writer<B, M>,
+    _ g: @escaping (B) -> C
+) -> (A) -> Writer<C, M> {
+    return { f($0).map(g) }
+}
+
 // MARK: - State
 public func >=> <A, B, C, S>(
 	_ f: @escaping (A) -> State<S, B>,
 	_ g: @escaping (B) -> State<S, C>
 ) -> (A) -> State<S, C> {
 	return { f($0).flatMap(g) }
+}
+
+public func >=> <A, B, C, S>(
+    _ f: @escaping (A) -> State<S, B>,
+    _ g: @escaping (B) -> C
+) -> (A) -> State<S, C> {
+    return { f($0).map(g) }
 }
