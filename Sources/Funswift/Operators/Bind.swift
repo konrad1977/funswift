@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Bind operator
 precedencegroup Bind {
 	associativity: left
-	higherThan: Pipe, Fish
+	higherThan: Pipe, Kleisli
 }
 
 infix operator >>-: Bind
