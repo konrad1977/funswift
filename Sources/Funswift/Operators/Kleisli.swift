@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK:- Kleisli composition
-precedencegroup Kleisli { associativity: left higherThan: Pipe }
+precedencegroup Kleisli { associativity: left higherThan: Pipe, Compose }
 infix operator >=>: Kleisli
 
 // MARK: - Optionals
