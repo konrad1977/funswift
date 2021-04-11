@@ -44,27 +44,47 @@ My goal is to provide tests for all the [monad laws](https://wiki.haskell.org/Mo
 
 \- `State`
 
-#### Non monads
-
-\- `Predicate`
-
-\- `Endo`
-
-\- `Memoization`
-
 #### Operators
 
 \- `<*>`  Applicatives 
 
 \- `>>-`  Bind 
 
-\- `>=>`  Fish
+\- `>=>`  Kleisli
 
 \- `>>>`  Forward compose 
 
 \- `<<<`  Backward Compose 
 
 \- `|>`  Pipe
+
+\- `<>`  Additional (Semigroups)
+
+\- `<&>`  Functors (map)
+
+#### Non monads
+
+#### Predicate
+
+`Predicate` is a wrapper around a function that consumes a value and produces a boolean. Its used to check if a value is in the predicate. It consumes a value and its supports a `contraMap` operation on its input. Contramap is when the arrows (morphism) changes direction and can be used to lift the consuming part to work on different strategies.
+
+ `Union` - creates a new Predicate and checks if value is inside self **or** the other predicate.
+
+ `Intersects` - creates a new Predicate and checks if value is inside self **and** the other predicate.
+
+ `Inverted` - creates a new Predicate and checks if value is **not** in previous self.
+
+Predicate also has support to check if you have many predicates if a value is in `anyOf`, `allOf` or `noneOf`.
+
+#### Memoization
+
+\- `Memoization` A class that is useful to cache functions return values. It will store input (must be `Hashable`) as a key and the value that the function produces as data. It will run in O(1) after it has cached the data. 
+
+Another useful property is that it can be used to have predictability when working with random values as it will always produce the same output for the same input even if the function you are calling is generating new random values.
+
+
+
+\- `Endo`
 
 ### Semigroup protocol
 
@@ -73,9 +93,11 @@ Allows sets/types to be concatinated by using the + operator.
 ```swift
 extension String: Semigroup {}
 "Hello " + "world" // Hello world
+"Hello " <> "world" // Hello world
 
 extension Array: Semigroup {}
 [object] + [anotherObject] // [object, anotherObject]
+[object] <> [anotherObject] // [object, anotherObject]
 ```
 
 This allows us to use Semigroup protocol instead where we want to concatinate objects, we added generalization we no longer need to work with concrete types. Semigroup always returns the same type. So if we do A + A = A
