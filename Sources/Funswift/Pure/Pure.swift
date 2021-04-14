@@ -19,7 +19,7 @@ public func pure<A>(_ value: A) -> Changeable<A> {
 
 // MARK: - State<S, A>
 public func pure<A, S>(value: A) -> State<S, A> {
-	State(initial: value)
+	State(initialValue: value)
 }
 
 // MARK: - Writer<A, M: Monoid>

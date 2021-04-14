@@ -5,10 +5,16 @@ final class OperatorFunctor: XCTestCase {
 
 	func incr(_ value: Int) -> Int { value + 1 }
 	func uppercased(_ value: String) -> String { value.uppercased() }
+    func lowercased(_ value: String) -> String { value.lowercased() }
 
     func testArrayMap() {
         let result = [1,2,3] <&> incr
         XCTAssertEqual([2,3,4], result)
+    }
+
+    func testOptionalMap() {
+        let str: String? = "Hello world" <&> uppercased
+        XCTAssertEqual("HELLO WORLD", str)
     }
 
     func testResultMap() {
@@ -29,8 +35,8 @@ final class OperatorFunctor: XCTestCase {
 	}
 
 	func testReaderMap() {
-		let reader = Reader<Void, String> { "Hello world" } <&> uppercased
-		XCTAssertEqual("HELLO WORLD", reader.run(()))
+		let reader = Reader<String, String> { "Hello \($0)" } <&> uppercased
+		XCTAssertEqual("HELLO WORLD", reader.run("WORLD"))
 	}
 
 	func testChangeableMap() {
@@ -38,4 +44,17 @@ final class OperatorFunctor: XCTestCase {
 		XCTAssertEqual("HELLO WORLD", changeable.value)
 		XCTAssertFalse(changeable.hasChanges)
 	}
+
+    func testStateMap() {
+        let state = State<Bool, String> { state in
+            (state, state ? "HELLO WORLD" : "Hello world")
+        }
+
+        XCTAssertEqual("HELLO WORLD", state.eval(state: true))
+        XCTAssertEqual("Hello world", state.eval(state: false))
+
+        // Will override and make it upper cased
+        XCTAssertEqual("HELLO WORLD", (state <&> uppercased).eval(state: false))
+        XCTAssertEqual("hello world", (state <&> lowercased).eval(state: true))
+    }
 }
