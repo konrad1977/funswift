@@ -1,6 +1,8 @@
 import XCTest
 @testable import Funswift
 
+extension String: Error {}
+
 final class OperatorKleisli: XCTestCase {
 
 	func incr(_ value: Int?) -> Int? {
@@ -8,6 +10,10 @@ final class OperatorKleisli: XCTestCase {
 		else { return nil }
 
 		return value + 1
+	}
+
+	func incrValidation(_ value: Int) -> Result<Int, Error> {
+		value < 0 ? .failure("Not valid") : .success(value + 1)
 	}
 
 	func testOptionalComposition() {
@@ -21,5 +27,11 @@ final class OperatorKleisli: XCTestCase {
 		XCTAssertEqual(12, secondResult)
 
 		XCTAssertEqual(22, 20 |> incr >=> incr)
+	}
+
+	func testResultComposition() {
+		let result = 10 |> incrValidation >=> incrValidation
+
+		XCTAssertEqual(12, try result.get())
 	}
 }

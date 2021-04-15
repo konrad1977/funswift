@@ -34,7 +34,7 @@ public func <><A: AnyObject>(
 public func <><A: AnyObject>(
 	_ lhs: @escaping (inout A) -> Void,
 	_ rhs: @escaping (inout A) -> Void
-) -> (A) -> Void {
+) -> (inout A) -> Void {
 	return { a in
 		var copy = a
 		lhs(&copy)
