@@ -3,6 +3,9 @@ import XCTest
 
 final class SemigroupTests: XCTestCase {
 
+	func incr(_ val: inout Int) -> Void { val += 1 }
+	func multiply(_ val: inout Int) -> Void { val *= val }
+
 	func testSemigroupArray() {
 		let result = [1,3,4] <> [2,3,4]
 		XCTAssertEqual([1,3,4,2,3,4], result)
@@ -27,6 +30,13 @@ final class SemigroupTests: XCTestCase {
 
 		let multiplyAndInreament = multiply <> incr
 		XCTAssertEqual(101, multiplyAndInreament(10))
+	}
+
+	func testInoutFunctions() {
+		var value: Int = 10
+		let multiplyAndInreament = multiply <> incr
+		multiplyAndInreament(&value)
+		XCTAssertEqual(101, value)
 	}
 
 	func testSemigroupReferenceType() {

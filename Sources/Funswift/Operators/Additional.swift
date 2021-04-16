@@ -31,14 +31,13 @@ public func <><A: AnyObject>(
 	}
 }
 
-public func <><A: AnyObject>(
+public func <><A>(
 	_ lhs: @escaping (inout A) -> Void,
 	_ rhs: @escaping (inout A) -> Void
 ) -> (inout A) -> Void {
 	return { a in
-		var copy = a
-		lhs(&copy)
-		rhs(&copy)
+		lhs(&a)
+		rhs(&a)
 	}
 }
 
