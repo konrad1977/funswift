@@ -43,9 +43,7 @@ Pure that lifts a generic type to Result
 - returns: Result<value, Error>
 */
 
-public func pure<A>(_ value: A) -> Result<A, Error> {
-	.success(value)
-}
+public func pure<A>(_ value: A) -> Result<A, Error> { .success(value) }
 
 public func zip<A, B, ErrorType: Error>(
 	_ lhs: Result<A, ErrorType>,
