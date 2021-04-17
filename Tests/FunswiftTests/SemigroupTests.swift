@@ -1,6 +1,17 @@
 import XCTest
 @testable import Funswift
 
+enum TextAlignment {
+    case left
+    case center
+    case right
+}
+
+class FakeLabel {
+    var text: String?
+    var alignment: TextAlignment = .left
+}
+
 final class SemigroupTests: XCTestCase {
 
 	func incr(_ val: inout Int) -> Void { val += 1 }
@@ -41,15 +52,15 @@ final class SemigroupTests: XCTestCase {
 
 	func testSemigroupReferenceType() {
 
-		let uppercasedStyle: (UILabel) -> Void = { $0.text = $0.text?.uppercased() }
-		let rightAlignStyle: (UILabel) -> Void = { $0.textAlignment = .right }
-		let label = UILabel()
+		let uppercasedStyle: (FakeLabel) -> Void = { $0.text = $0.text?.uppercased() }
+        let rightAlignStyle: (FakeLabel) -> Void = { $0.alignment = .right }
+		let label = FakeLabel()
 		label.text = "Hello World"
 
 		let uppercasedRightAlignStyle = uppercasedStyle <> rightAlignStyle
 		uppercasedRightAlignStyle(label)
 
 		XCTAssertEqual("HELLO WORLD", label.text)
-		XCTAssertEqual(.right, label.textAlignment)
+		XCTAssertEqual(.right, label.alignment)
 	}
 }

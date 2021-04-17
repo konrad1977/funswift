@@ -15,3 +15,12 @@ public func |><A, B>(
 ) -> B {
 	return f(value)
 }
+
+
+public func |><A, B>(
+    _ value: A,
+    _ f: @escaping (inout A) -> B
+) -> B {
+    var cpy = value
+    return f(&cpy)
+}

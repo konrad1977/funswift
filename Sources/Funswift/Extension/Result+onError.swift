@@ -11,7 +11,7 @@ import Foundation
 extension Result {
 
 	/**
-	A faster way of getting the succes out and it can be chained.
+	A faster way of getting the success out and it can be chained.
 	- parameter f: A function that includes the succes(ed) value.
 	- returns: Self
 	*/
