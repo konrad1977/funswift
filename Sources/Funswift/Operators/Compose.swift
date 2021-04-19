@@ -6,7 +6,11 @@
 //
 
 // MARK:- Forward Compose
-precedencegroup Compose { associativity: left higherThan: Pipe }
+precedencegroup Compose {
+    associativity: left
+    higherThan: Pipe, MapCompose
+}
+
 infix operator >>>: Compose
 
 public func >>><A, B, C>(
