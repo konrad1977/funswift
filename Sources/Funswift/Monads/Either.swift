@@ -31,10 +31,28 @@ public enum Either<LEFT, B> {
 			return f(value)
 		}
 	}
+
+	public func right() -> B? {
+		switch self {
+		case let .right(value):
+			return value
+		case .left:
+			return nil
+		}
+	}
+
+	public func left() -> LEFT? {
+		switch self {
+		case let .left(value):
+			return value
+		case .right:
+			return nil
+		}
+	}
 }
 
 // MARK: - Equating
-extension Either where B: Equatable { }
+extension Either where B: Equatable, LEFT: Equatable { }
 
 // MARK: - Pure
 public func pure<A, B>(_ value: B) -> Either<A, B> { .right(value) }

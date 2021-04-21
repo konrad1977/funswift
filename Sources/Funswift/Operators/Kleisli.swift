@@ -35,6 +35,14 @@ public func >=> <A, B, C>(
     return { f($0).flatMap(g) }
 }
 
+// MARK: - Either
+public func >=> <A, B, C, E>(
+	_ f: @escaping (A) -> Either<E, B>,
+	_ g: @escaping (B) -> Either<E, C>
+) -> (A) -> Either<E, C> {
+	return { f($0).flatMap(g) }
+}
+
 // MARK: - Changeable
 public func >=> <A, B, C>(
 	_ f: @escaping (A) -> Changeable<B>,

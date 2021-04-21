@@ -83,6 +83,21 @@ public func <&><A, B>(
 	return { lhs.map(g) }()
 }
 
+// MARK:- Either
+public func <&><A, B, C, E>(
+	_ f: @escaping (A) -> Either<E, B>,
+	_ g: @escaping (B) -> C
+) -> (A) -> Either<E, C> {
+	return { f($0).map(g) }
+}
+
+public func <&><A, B, E>(
+	_ lhs: Either<E, A>,
+	_ g: @escaping (A) -> B
+) -> Either<E, B> {
+	return { lhs.map(g) }()
+}
+
 // MARK:- Deferred
 public func <&><A, B, C>(
     _ f: @escaping (A) -> Deferred<B>,

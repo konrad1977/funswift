@@ -24,6 +24,14 @@ public func >>- <A, B>(
 	lhs.flatMap(transform)
 }
 
+// MARK: - Either
+public func >>- <A, B, E>(
+	_ lhs:  Either<E, A>,
+	_ transform: @escaping (A) -> Either<E, B>
+) -> Either<E, B> {
+	lhs.flatMap(transform)
+}
+
 // MARK: - Changeable
 public func >>- <A, B>(
 	_ lhs: Changeable<A>,
