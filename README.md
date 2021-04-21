@@ -48,29 +48,29 @@ My goal is to provide tests for all the [monad laws](https://wiki.haskell.org/Mo
 
 ##### Functors
 
-\- `<*>`  Applicatives 
+ `<*>`  Applicatives 
 
-\- `<&>`  Functors (map)
+ `<&>`  Map
 
 ##### Monads
 
-\- `>>-`  Bind 
+ `>>-`  Bind (Monad + tranform)
 
-\- `>=>`  Kleisli
+ `>=>`  Kleisli
 
 ##### Monoids
 
-\- `<>`  Additional (Semigroups)
+ `<>`  Additional (Semigroups)
 
 ##### Function composition
 
-\- `>>>`  Forward compose 
+ `>>>`  Forward compose 
 
-\- `<<<`  Backward Compose 
+ `<<<`  Backward Compose 
 
 ##### Pipe values into functions
 
-\- `|>`  Pipe
+ `|>`  Pipe
 
 
 
