@@ -20,10 +20,10 @@ public func >=> <A, B, C>(
 }
 
 // MARK: - Result
-public func >=> <A, B, C>(
-	_ f: @escaping (A) -> Result<B, Error>,
-	_ g: @escaping (B) -> Result<C, Error>
-) -> (A) -> Result<C, Error> {
+public func >=> <A, B, C, E: Error>(
+	_ f: @escaping (A) -> Result<B, E>,
+	_ g: @escaping (B) -> Result<C, E>
+) -> (A) -> Result<C, E> {
 	return { f($0).flatMap(g) }
 }
 

@@ -17,10 +17,10 @@ public func >>- <A, B>(
 }
 
 // MARK: - Result
-public func >>- <A, B>(
-	_ lhs:  Result<A, Error>,
-	_ transform: @escaping (A) -> Result<B, Error>
-) -> Result<B, Error> {
+public func >>- <A, B, E: Error>(
+	_ lhs:  Result<A, E>,
+	_ transform: @escaping (A) -> Result<B, E>
+) -> Result<B, E> {
 	lhs.flatMap(transform)
 }
 
