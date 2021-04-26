@@ -9,6 +9,10 @@ import Foundation
 
 public func pure<A>(_ value: A) -> Optional<A> { .some(value) }
 
+extension Optional: GenericTypeConstructor {
+    typealias ParamtricType = Wrapped
+}
+
 public func zip<A, B>(
     _ lhs: Optional<A>,
     _ rhs: Optional<B>)

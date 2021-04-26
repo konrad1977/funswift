@@ -38,6 +38,27 @@ public struct Deferred<A> {
     }
 }
 
+extension Deferred: GenericTypeConstructor {
+
+    public typealias ParamtricType = A
+
+    func mapT <Input,Output> (
+        _ f: @escaping (Input) -> Output
+    ) -> Deferred<Optional<Output>> where ParamtricType == Optional<Input> {
+        Deferred<Optional<Output>> { callback in
+            self.run { callback($0.map(f)) }
+        }
+    }
+
+    func mapT <Input, Output, E: Error> (
+        _ f: @escaping (Input) -> Output
+    ) -> Deferred<Result<Output, E>> where ParamtricType == Result<Input, E> {
+        Deferred<Result<Output, E>> { callback in
+            self.run { callback($0.map(f)) }
+        }
+    }
+}
+
 extension Deferred {
 
     public init(io: IO<A>) {

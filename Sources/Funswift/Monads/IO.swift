@@ -30,11 +30,36 @@ extension IO: Equatable where A: Equatable {
 	}
 }
 
+extension IO: GenericTypeConstructor {
+
+    public typealias ParamtricType = A
+
+    func mapT <Input,Output> (
+        _ f: @escaping (Input) -> Output
+    ) -> IO<Optional<Output>> where ParamtricType == Optional<Input> {
+        IO<Optional<Output>> { self.unsafeRun().map(f) }
+    }
+
+    func mapT <Input, Output, E: Error> (
+        _ f: @escaping (Input) -> Output
+    ) -> IO<Result<Output, E>> where ParamtricType == Result<Input, E> {
+        IO<Result<Output, E>> { self.unsafeRun().map(f) }
+    }
+}
+
+
 extension IO {
 
-	public static func pure(_ value: A) -> IO<A> {
-		IO { value }
-	}
+    public static func pureT<B, E: Error>(_ value: B) -> IO<Result<B, E>> where ParamtricType == Result<B, E> {
+        IO { .success(value) }
+    }
+
+    public static func pure(_ value: A) -> IO<A> {
+        IO { value }
+    }
+}
+
+extension IO {
 
     public init(deferred: Deferred<A>) {
         self.init {
