@@ -50,7 +50,15 @@ extension IO: GenericTypeConstructor {
 
 extension IO {
 
-    public static func pureT<B, E: Error>(_ value: B) -> IO<Result<B, E>> where ParamtricType == Result<B, E> {
+	public static func pureT<B>(
+		_ value: B
+	) -> IO<Optional<B>> where ParamtricType == Optional<B> {
+		IO { .some(value) }
+	}
+
+    public static func pureT<B, E: Error>(
+		_ value: B
+	) -> IO<Result<B, E>> where ParamtricType == Result<B, E> {
         IO { .success(value) }
     }
 

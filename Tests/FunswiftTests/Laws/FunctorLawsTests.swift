@@ -106,4 +106,16 @@ final class FunctorLawsTests: XCTestCase {
         let result2 = Reader<Int, Int> { $0 } <&> String.init >>> reversed
         XCTAssertEqual("01", result2.run(10))
     }
+
+	func testMapTIOResult() {
+		let ioResult = IO<Result<Int, Error>> { .success(101) }
+		let result = ioResult.mapT(String.init)
+		XCTAssertEqual("101", try result.unsafeRun().get())
+	}
+
+	func testMapTIOOptional() {
+		let ioResult = IO<Optional<Int>> { 101 }
+		let result = ioResult.mapT(String.init)
+		XCTAssertEqual("101", result.unsafeRun())
+	}
 }

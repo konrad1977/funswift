@@ -248,4 +248,14 @@ final class IOTests: XCTestCase {
         let result = IO(delayedInt(completion:)).unsafeRun()
         XCTAssertEqual(101, result)
     }
+
+	func testInitPureTResult() {
+		let result = IO<Result<Int, Error>>.pureT(10).unsafeRun()
+		XCTAssertEqual(10, try result.get())
+	}
+
+	func testInitPureTOptional() {
+		let result = IO<Optional<Int>>.pureT(10).unsafeRun()
+		XCTAssertEqual(10, result)
+	}
 }
