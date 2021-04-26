@@ -26,6 +26,21 @@ public func <*><A, B, E: Error>(
 	}
 }
 
+// MARK: - Either Applicative
+public func <*><A, B, LEFT>(
+	_ lhs: Either<LEFT, (A) ->B>,
+	_ rhs: Either<LEFT, A>
+) -> Either<LEFT, B> {
+	switch (lhs, rhs) {
+	case let (.right(functor), .right(value)):
+		return .right(functor(value))
+	case let (.left(error), _):
+		return .left(error)
+	case let (_, .left(error)):
+		return .left(error)
+	}
+}
+
 // MARK: - IO Applicative
 public func <*><A, B>(
 	_ lhs: IO<(A) ->B>,

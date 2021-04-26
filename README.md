@@ -32,35 +32,47 @@ My goal is to provide tests for all the [monad laws](https://wiki.haskell.org/Mo
 
 ### Monads
 
-\- [IO](#IO)
+-  [IO](#IO)
 
-\- [Deferred](#deferred)
+- [Deferred](#deferred)
 
-\- `Reader`
+- `Either`
 
-\- `Writer`
+- `Reader`
 
-\- `Changeable`
-
-\- `State`
+-  `Writer`
+-  `Changeable`
+-  `State`
 
 #### Operators
 
-\- `<*>`  Applicatives 
+##### Functors
 
-\- `>>-`  Bind 
+ `<*>`  Applicatives 
 
-\- `>=>`  Kleisli
+ `<&>`  Map
 
-\- `>>>`  Forward compose 
+##### Monads
 
-\- `<<<`  Backward Compose 
+ `>>-`  Bind (Monad + tranform)
 
-\- `|>`  Pipe
+ `>=>`  Kleisli
 
-\- `<>`  Additional (Semigroups)
+##### Monoids
 
-\- `<&>`  Functors (map)
+ `<>`  Additional (Semigroups)
+
+##### Function composition
+
+ `>>>`  Forward compose 
+
+ `<<<`  Backward Compose 
+
+##### Pipe values into functions
+
+ `|>`  Pipe
+
+
 
 #### Non monads
 

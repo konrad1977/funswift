@@ -27,6 +27,19 @@ final class OperatorFunctor: XCTestCase {
         XCTAssertEqual("HELLO WORLD", result.unsafeRun())
     }
 
+	func testEitherRightMap() {
+		let eitherResult = Either<String, String>.right("Hello world") <&> uppercased
+		XCTAssertEqual("HELLO WORLD", eitherResult.right())
+	}
+
+	func testEitherLeftMap() {
+		let eitherResult = Either<String, String>.left("failure") <&> uppercased
+		XCTAssertNotEqual("HELLO WORLD", eitherResult.left())
+		XCTAssertNotEqual("HELLO WORLD", eitherResult.right())
+
+		XCTAssertEqual("failure", eitherResult.left())
+	}
+
 	func testDefferedMap() {
 		let deferred = Deferred { $0("Hello world") } <&> uppercased
 		deferred.run { result in
