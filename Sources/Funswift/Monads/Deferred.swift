@@ -47,7 +47,7 @@ extension Deferred: GenericTypeConstructor {
 		}
 	}
 
-    func mapT <Input,Output> (
+    public func mapT <Input,Output> (
         _ f: @escaping (Input) -> Output
     ) -> Deferred<Optional<Output>> where ParamtricType == Optional<Input> {
         Deferred<Optional<Output>> { callback in
@@ -55,7 +55,7 @@ extension Deferred: GenericTypeConstructor {
         }
     }
 
-    func mapT <Input, Output, E: Error> (
+    public func mapT <Input, Output, E: Error> (
         _ f: @escaping (Input) -> Output
     ) -> Deferred<Result<Output, E>> where ParamtricType == Result<Input, E> {
         Deferred<Result<Output, E>> { callback in

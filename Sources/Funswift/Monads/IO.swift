@@ -34,13 +34,13 @@ extension IO: GenericTypeConstructor {
 
     public typealias ParamtricType = A
 
-    func mapT <Input,Output> (
+    public func mapT <Input,Output> (
         _ f: @escaping (Input) -> Output
     ) -> IO<Optional<Output>> where ParamtricType == Optional<Input> {
         IO<Optional<Output>> { self.unsafeRun().map(f) }
     }
 
-    func mapT <Input, Output, E: Error> (
+    public func mapT <Input, Output, E: Error> (
         _ f: @escaping (Input) -> Output
     ) -> IO<Result<Output, E>> where ParamtricType == Result<Input, E> {
         IO<Result<Output, E>> { self.unsafeRun().map(f) }
