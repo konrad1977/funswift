@@ -17,6 +17,10 @@ public struct Deferred<A> {
         self.run = run
     }
 
+	public init(io: IO<A>) {
+		self.init(io.unsafeRun())
+	}
+
     public init(_ work: @autoclosure @escaping () -> A) {
 		self = Deferred { callback in
 			DispatchQueue.global().async {
@@ -25,12 +29,6 @@ public struct Deferred<A> {
 		}
 	}
 
-    public func map<B>(_ f: @escaping (A) -> B) -> Deferred<B> {
-        Deferred<B> { callback in
-            self.run { callback(f($0)) }
-        }
-    }
-
     public func flatMap<B>(_ f: @escaping (A) -> Deferred<B>) -> Deferred<B> {
         Deferred<B> { callbackB in
             self.run { f($0).run { callbackB($0) } }
@@ -38,9 +36,16 @@ public struct Deferred<A> {
     }
 }
 
+// MARK: - map/mapT
 extension Deferred: GenericTypeConstructor {
 
     public typealias ParamtricType = A
+
+	public func map<B>(_ f: @escaping (A) -> B) -> Deferred<B> {
+		Deferred<B> { callback in
+			self.run { callback(f($0)) }
+		}
+	}
 
     func mapT <Input,Output> (
         _ f: @escaping (Input) -> Output
@@ -59,12 +64,8 @@ extension Deferred: GenericTypeConstructor {
     }
 }
 
+// MARK: - Delay
 extension Deferred {
-
-    public init(io: IO<A>) {
-        self.init(io.unsafeRun())
-    }
-
 	public static func delayed(by interval: TimeInterval, work: @escaping () -> A ) -> Deferred {
 		Deferred { callback in
 			DispatchQueue.global().asyncAfter(deadline: .now() + interval) {
@@ -76,12 +77,29 @@ extension Deferred {
     public static func delayed(by interval: TimeInterval, withIO io: IO<A>) -> Deferred {
         Deferred.delayed(by: interval, work: io.unsafeRun)
     }
+}
+
+// MARK: - Pure
+extension Deferred {
 
 	public static func pure(_ value: A) -> Deferred<A> {
 		Deferred(value)
 	}
+
+	public static func pureT<B>(
+		_ value: B
+	) -> Deferred<Optional<B>> where ParamtricType == Optional<B> {
+		Deferred { $0(.some(value)) }
+	}
+
+	public static func pureT<B, E: Error>(
+		_ value: B
+	) -> Deferred<Result<B, E>> where ParamtricType == Result<B, E> {
+		Deferred { $0(.success(value)) }
+	}
 }
 
+// MARK: - Zip
 public func zip<A, B>(
     _ lhs: Deferred<A>,
     _ rhs: Deferred<B>

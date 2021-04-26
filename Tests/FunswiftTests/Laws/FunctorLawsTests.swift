@@ -118,4 +118,30 @@ final class FunctorLawsTests: XCTestCase {
 		let result = ioResult.mapT(String.init)
 		XCTAssertEqual("101", result.unsafeRun())
 	}
+
+	func testMapTDeferredOptional() {
+		let deferred = Deferred<Optional<Int>>.pureT(101)
+			.mapT(String.init)
+
+		let expectation = XCTestExpectation(description: "Deferred wait first")
+
+		deferred.run { result in
+			XCTAssertEqual(result, "101")
+			expectation.fulfill()
+		}
+		wait(for: [expectation], timeout: 0.1)
+	}
+
+	func testMapTDeferredResult() {
+		let deferred = Deferred<Result<Int, Error>>.pureT(101)
+			.mapT(String.init)
+
+		let expectation = XCTestExpectation(description: "Deferred wait first")
+
+		deferred.run { result in
+			XCTAssertEqual(try! result.get(), "101")
+			expectation.fulfill()
+		}
+		wait(for: [expectation], timeout: 0.1)
+	}
 }

@@ -184,4 +184,29 @@ final class DeferredTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 0.55)
     }
+
+	func testInitPureTResult() {
+		let expectation = XCTestExpectation(description: "Waiting")
+
+		let result = Deferred<Result<Int, Error>>.pureT(10)
+		result.run { result in
+			expectation.fulfill()
+			XCTAssertEqual(10, try! result.get())
+		}
+
+		wait(for: [expectation], timeout: 0.55)
+	}
+
+	func testInitPureTOptional() {
+		
+		let expectation = XCTestExpectation(description: "Waiting")
+
+		let result = Deferred<Optional<Int>>.pureT(10)
+		result.run { result in
+			expectation.fulfill()
+			XCTAssertEqual(10, result)
+		}
+
+		wait(for: [expectation], timeout: 0.55)
+	}
 }
