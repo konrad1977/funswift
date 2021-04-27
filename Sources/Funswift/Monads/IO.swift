@@ -45,6 +45,12 @@ extension IO: GenericTypeConstructor {
     ) -> IO<Result<Output, E>> where ParamtricType == Result<Input, E> {
         IO<Result<Output, E>> { self.unsafeRun().map(f) }
     }
+
+	public func mapT <Input, Output, Left> (
+		_ f: @escaping (Input) -> Output
+	) -> IO<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
+		IO<Either<Left, Output>> { self.unsafeRun().map(f) }
+	}
 }
 
 
@@ -61,6 +67,12 @@ extension IO {
 	) -> IO<Result<B, E>> where ParamtricType == Result<B, E> {
         IO { .success(value) }
     }
+
+	public static func pureT<B, Left>(
+		_ value: B
+	) -> IO<Either<Left, B>> where ParamtricType == Either<Left, B> {
+		IO { .right(value) }
+	}
 
     public static func pure(_ value: A) -> IO<A> {
         IO { value }

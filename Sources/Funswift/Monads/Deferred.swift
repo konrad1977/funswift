@@ -62,6 +62,14 @@ extension Deferred: GenericTypeConstructor {
             self.run { callback($0.map(f)) }
         }
     }
+
+	public func mapT <Input, Output, Left> (
+		_ f: @escaping (Input) -> Output
+	) -> Deferred<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
+		Deferred<Either<Left, Output>> { callback in
+			self.run { callback($0.map(f)) }
+		}
+	}
 }
 
 // MARK: - Delay
@@ -96,6 +104,12 @@ extension Deferred {
 		_ value: B
 	) -> Deferred<Result<B, E>> where ParamtricType == Result<B, E> {
 		Deferred { $0(.success(value)) }
+	}
+
+	public static func pureT<B, Left>(
+		_ value: B
+	) -> Deferred<Either<Left, B>> where ParamtricType == Either<Left, B> {
+		Deferred { $0(.right(value)) }
 	}
 }
 
