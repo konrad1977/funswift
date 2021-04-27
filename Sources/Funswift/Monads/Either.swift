@@ -49,6 +49,24 @@ public enum Either<LEFT, B> {
 			return nil
 		}
 	}
+
+    public init(throwing: @autoclosure () throws -> B) where LEFT == Error {
+        do {
+            let result: B = try throwing()
+            self = .right(result)
+        } catch {
+            self = .left(error)
+        }
+    }
+
+    public init(result: Result<B, Error>) where LEFT == Error {
+        switch result {
+        case let .success(value):
+            self = .right(value)
+        case let .failure(error):
+            self = .left(error)
+        }
+    }
 }
 
 // MARK: - Equating
