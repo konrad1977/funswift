@@ -50,12 +50,12 @@ public enum Either<E, B> {
 		}
 	}
 
-    public init(throwing: @autoclosure () throws -> B) where E: Error {
+    public init(cathing body: () throws -> B) where E == Error {
         do {
-            let result: B = try throwing()
+            let result: B = try body()
             self = .right(result)
         } catch {
-            self = .left(error as! E)
+            self = .left(error)
         }
     }
 
