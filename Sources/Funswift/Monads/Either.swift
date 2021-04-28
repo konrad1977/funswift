@@ -7,26 +7,26 @@
 
 import Foundation
 
-public enum Either<LEFT, B> {
+public enum Either<E, B> {
 
-	case left(LEFT)
+	case left(E)
 	case right(B)
 
 	// MARK: - Functor
-	public func map<C>(_ f: (B) -> C) -> Either<LEFT, C> {
+	public func map<C>(_ f: (B) -> C) -> Either<E, C> {
 		switch self {
 		case let .left(value):
-			return Either<LEFT, C>.left(value)
+			return Either<E, C>.left(value)
 		case let .right(value):
-			return Either<LEFT, C>.right(f(value))
+			return Either<E, C>.right(f(value))
 		}
 	}
 
 	// MARK: - Monad
-	public func flatMap<C>(_ f: (B) -> Either<LEFT, C>) -> Either<LEFT, C> {
+	public func flatMap<C>(_ f: (B) -> Either<E, C>) -> Either<E, C> {
 		switch self {
 		case let .left(value):
-			return Either<LEFT, C>.left(value)
+			return Either<E, C>.left(value)
 		case let .right(value):
 			return f(value)
 		}
@@ -41,7 +41,7 @@ public enum Either<LEFT, B> {
 		}
 	}
 
-	public func left() -> LEFT? {
+	public func left() -> E? {
 		switch self {
 		case let .left(value):
 			return value
@@ -50,16 +50,16 @@ public enum Either<LEFT, B> {
 		}
 	}
 
-    public init(throwing: @autoclosure () throws -> B) where LEFT == Error {
+    public init(throwing: @autoclosure () throws -> B) where E: Error {
         do {
             let result: B = try throwing()
             self = .right(result)
         } catch {
-            self = .left(error)
+            self = .left(error as! E)
         }
     }
 
-    public init(result: Result<B, Error>) where LEFT == Error {
+    public init(result: Result<B, Error>) where E == Error {
         switch result {
         case let .success(value):
             self = .right(value)
@@ -70,124 +70,124 @@ public enum Either<LEFT, B> {
 }
 
 // MARK: - Equating
-extension Either where B: Equatable, LEFT: Equatable { }
+extension Either where B: Equatable, E: Equatable { }
 
 // MARK: - Pure
 public func pure<A, B>(_ value: B) -> Either<A, B> { .right(value) }
 
 
 // MARK: - Zip
-public func zip<LEFT, A, B>(
-	_ lhs: Either<LEFT, A>,
-	_ rhs: Either<LEFT, B>)
--> Either<LEFT, (A, B)> {
+public func zip<Err, A, B>(
+	_ lhs: Either<Err, A>,
+	_ rhs: Either<Err, B>)
+-> Either<Err, (A, B)> {
 	switch (lhs, rhs) {
 	case let (.right(first), .right(second)):
-		return Either<LEFT, (A, B)>.right((first, second))
+		return Either<Err, (A, B)>.right((first, second))
 	case let (_, .left(error)):
-		return Either<LEFT, (A, B)>.left(error)
+		return Either<Err, (A, B)>.left(error)
 	case let (.left(error), _):
-		return Either<LEFT, (A, B)>.left(error)
+		return Either<Err, (A, B)>.left(error)
 	}
 }
 
 
-public func zip<LEFT, A, B, C>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>
-) -> Either<LEFT, (A, B, C)> {
+public func zip<Err, A, B, C>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>
+) -> Either<Err, (A, B, C)> {
 	zip(first, zip(second, third))
 		.map { ($0, $1.0, $1.1) }
 }
 
-public func zip<LEFT, A, B, C, D>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>
-) -> Either<LEFT, (A, B, C, D)> {
+public func zip<Err, A, B, C, D>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>
+) -> Either<Err, (A, B, C, D)> {
 	zip(first, zip(second, third, forth))
 		.map { ($0, $1.0, $1.1, $1.2) }
 }
 
-public func zip<LEFT, A, B, C, D, E>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>,
-	_ fifth: Either<LEFT, E>
-) -> Either<LEFT, (A, B, C, D, E)> {
+public func zip<Err, A, B, C, D, E>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>,
+	_ fifth: Either<Err, E>
+) -> Either<Err, (A, B, C, D, E)> {
 	zip(first, zip(second, third, forth, fifth))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3) }
 }
 
-public func zip<LEFT, A, B, C, D, E, F>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>,
-	_ fifth: Either<LEFT, E>,
-	_ sixth: Either<LEFT, F>
-) -> Either<LEFT, (A, B, C, D, E, F)> {
+public func zip<Err, A, B, C, D, E, F>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>,
+	_ fifth: Either<Err, E>,
+	_ sixth: Either<Err, F>
+) -> Either<Err, (A, B, C, D, E, F)> {
 	zip(first, zip(second, third, forth, fifth, sixth))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4) }
 }
 
-public func zip<LEFT, A, B, C, D, E, F, G>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>,
-	_ fifth: Either<LEFT, E>,
-	_ sixth: Either<LEFT, F>,
-	_ seventh: Either<LEFT, G>
-) -> Either<LEFT, (A, B, C, D, E, F, G)> {
+public func zip<Err, A, B, C, D, E, F, G>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>,
+	_ fifth: Either<Err, E>,
+	_ sixth: Either<Err, F>,
+	_ seventh: Either<Err, G>
+) -> Either<Err, (A, B, C, D, E, F, G)> {
 	zip(first, zip(second, third, forth, fifth, sixth, seventh))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4, $1.5) }
 }
 
-public func zip<LEFT, A, B, C, D, E, F, G, H>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>,
-	_ fifth: Either<LEFT, E>,
-	_ sixth: Either<LEFT, F>,
-	_ seventh: Either<LEFT, G>,
-	_ eigth: Either<LEFT, H>
-) -> Either<LEFT, (A, B, C, D, E, F, G, H)> {
+public func zip<Err, A, B, C, D, E, F, G, H>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>,
+	_ fifth: Either<Err, E>,
+	_ sixth: Either<Err, F>,
+	_ seventh: Either<Err, G>,
+	_ eigth: Either<Err, H>
+) -> Either<Err, (A, B, C, D, E, F, G, H)> {
 	zip(first, zip(second, third, forth, fifth, sixth, seventh, eigth))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4, $1.5, $1.6) }
 }
 
-public func zip<LEFT, A, B, C, D, E, F, G, H, I>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>,
-	_ fifth: Either<LEFT, E>,
-	_ sixth: Either<LEFT, F>,
-	_ seventh: Either<LEFT, G>,
-	_ eigth: Either<LEFT, H>,
-	_ ninth: Either<LEFT, I>
-) -> Either<LEFT, (A, B, C, D, E, F, G, H, I)> {
+public func zip<Err, A, B, C, D, E, F, G, H, I>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>,
+	_ fifth: Either<Err, E>,
+	_ sixth: Either<Err, F>,
+	_ seventh: Either<Err, G>,
+	_ eigth: Either<Err, H>,
+	_ ninth: Either<Err, I>
+) -> Either<Err, (A, B, C, D, E, F, G, H, I)> {
 	zip(first, zip(second, third, forth, fifth, sixth, seventh, eigth, ninth))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4, $1.5, $1.6, $1.7) }
 }
 
-public func zip<LEFT, A, B, C, D, E, F, G, H, I, J>(
-	_ first: Either<LEFT, A>,
-	_ second: Either<LEFT, B>,
-	_ third: Either<LEFT, C>,
-	_ forth: Either<LEFT, D>,
-	_ fifth: Either<LEFT, E>,
-	_ sixth: Either<LEFT, F>,
-	_ seventh: Either<LEFT, G>,
-	_ eigth: Either<LEFT, H>,
-	_ ninth: Either<LEFT, I>,
-	_ tenth: Either<LEFT, J>
-) -> Either<LEFT, (A, B, C, D, E, F, G, H, I, J)> {
+public func zip<Err, A, B, C, D, E, F, G, H, I, J>(
+	_ first: Either<Err, A>,
+	_ second: Either<Err, B>,
+	_ third: Either<Err, C>,
+	_ forth: Either<Err, D>,
+	_ fifth: Either<Err, E>,
+	_ sixth: Either<Err, F>,
+	_ seventh: Either<Err, G>,
+	_ eigth: Either<Err, H>,
+	_ ninth: Either<Err, I>,
+	_ tenth: Either<Err, J>
+) -> Either<Err, (A, B, C, D, E, F, G, H, I, J)> {
 	zip(first, zip(second, third, forth, fifth, sixth, seventh, eigth, ninth, tenth))
 		.map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4, $1.5, $1.6, $1.7, $1.8) }
 }
