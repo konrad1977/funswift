@@ -12,26 +12,6 @@ public enum Either<E, B> {
 	case left(E)
 	case right(B)
 
-	// MARK: - Functor
-	public func map<C>(_ f: (B) -> C) -> Either<E, C> {
-		switch self {
-		case let .left(value):
-			return Either<E, C>.left(value)
-		case let .right(value):
-			return Either<E, C>.right(f(value))
-		}
-	}
-
-	// MARK: - Monad
-	public func flatMap<C>(_ f: (B) -> Either<E, C>) -> Either<E, C> {
-		switch self {
-		case let .left(value):
-			return Either<E, C>.left(value)
-		case let .right(value):
-			return f(value)
-		}
-	}
-
     public init(cathing body: () throws -> B) where E == Error {
         do {
             let result: B = try body()
@@ -51,6 +31,49 @@ public enum Either<E, B> {
     }
 }
 
+// MARK: - Functor
+extension Either {
+
+	public func map<C>(_ f: (B) -> C) -> Either<E, C> {
+		switch self {
+		case let .left(value):
+			return Either<E, C>.left(value)
+		case let .right(value):
+			return Either<E, C>.right(f(value))
+		}
+	}
+
+	public func biMap<C, F>(_ f: (B) -> C, _ g: (E) -> F) -> Either<F, C> {
+		switch self {
+		case let .left(value):
+			return Either<F, C>.left(g(value))
+		case let .right(value):
+			return Either<F, C>.right(f(value))
+		}
+	}
+
+	public func lMap<F>(_ f: (E) -> F) -> Either<F, B> {
+		switch self {
+		case let .left(value):
+			return Either<F, B>.left(f(value))
+		case let .right(value):
+			return Either<F, B>.right(value)
+		}
+	}
+}
+
+// MARK: - Monad
+extension Either {
+	public func flatMap<C>(_ f: (B) -> Either<E, C>) -> Either<E, C> {
+		switch self {
+		case let .left(value):
+			return Either<E, C>.left(value)
+		case let .right(value):
+			return f(value)
+		}
+	}
+}
+
 // MARK: Values
 extension Either {
 
@@ -66,6 +89,20 @@ extension Either {
 		else { return self }
 		f(value)
 		return self
+	}
+
+	public func isRight() -> Bool {
+		if case .right = self {
+			return true
+		}
+		return false
+	}
+
+	public func isLeft() -> Bool {
+		if case .left = self {
+			return true
+		}
+		return false
 	}
 
 	public func right() -> B? {
