@@ -12,24 +12,27 @@ final class UnthrowingTests: XCTestCase {
 	}
 
 	func testThrowToResult() {
-		var thrownError: Error?
 
-		// Capture the thrown error using a closure
-		XCTAssertThrowsError(try functionThatThrows()) {
-			thrownError = $0
+		let result: Result<Int, Error> = unThrow { try functionThatThrows() }
+		switch result {
+		case let .failure(error):
+			XCTAssertTrue(
+				error is CustomError,
+				"Unexpected error type: \(type(of: error))"
+			)
+		case .success:
+			XCTAssert(true)
 		}
+	}
 
-		XCTAssertTrue(
-			thrownError is CustomError,
-			"Unexpected error type: \(type(of: thrownError))"
-		)
+	func testThrowToResultAutoclousure() {
 
 		let result: Result<Int, Error> = unThrow(try functionThatThrows())
 		switch result {
 		case let .failure(error):
 			XCTAssertTrue(
 				error is CustomError,
-				"Unexpected error type: \(type(of: thrownError))"
+				"Unexpected error type: \(type(of: error))"
 			)
 		case .success:
 			XCTAssert(true)
@@ -37,24 +40,13 @@ final class UnthrowingTests: XCTestCase {
 	}
 
 	func testThrowToEither() {
-		var thrownError: Error?
-
-		// Capture the thrown error using a closure
-		XCTAssertThrowsError(try functionThatThrows()) {
-			thrownError = $0
-		}
-
-		XCTAssertTrue(
-			thrownError is CustomError,
-			"Unexpected error type: \(type(of: thrownError))"
-		)
 
 		let result: Either<Error, Int> = unThrow(try functionThatThrows())
 		switch result {
 		case let .left(error):
 			XCTAssertTrue(
 				error is CustomError,
-				"Unexpected error type: \(type(of: thrownError))"
+				"Unexpected error type: \(type(of: error))"
 			)
 		case .right:
 			XCTAssert(true)
