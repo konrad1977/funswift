@@ -77,6 +77,7 @@ extension Either {
 // MARK: Values
 extension Either {
 
+	@discardableResult
 	public func onRight(_ f: (B) -> Void) -> Self {
 		guard case let .right(value) = self
 		else { return self }
@@ -84,6 +85,7 @@ extension Either {
 		return self
 	}
 
+	@discardableResult
 	public func onLeft(_ f: (E) -> Void) -> Self {
 		guard case let .left(value) = self
 		else { return self }
