@@ -32,24 +32,6 @@ public enum Either<E, B> {
 		}
 	}
 
-	public func right() -> B? {
-		switch self {
-		case let .right(value):
-			return value
-		case .left:
-			return nil
-		}
-	}
-
-	public func left() -> E? {
-		switch self {
-		case let .left(value):
-			return value
-		case .right:
-			return nil
-		}
-	}
-
     public init(cathing body: () throws -> B) where E == Error {
         do {
             let result: B = try body()
@@ -67,6 +49,42 @@ public enum Either<E, B> {
             self = .left(error)
         }
     }
+}
+
+// MARK: Values
+extension Either {
+
+	public func onRight(_ f: (B) -> Void) -> Self {
+		guard case let .right(value) = self
+		else { return self }
+		f(value)
+		return self
+	}
+
+	public func onLeft(_ f: (E) -> Void) -> Self {
+		guard case let .left(value) = self
+		else { return self }
+		f(value)
+		return self
+	}
+
+	public func right() -> B? {
+		switch self {
+		case let .right(value):
+			return value
+		case .left:
+			return nil
+		}
+	}
+
+	public func left() -> E? {
+		switch self {
+		case let .left(value):
+			return value
+		case .right:
+			return nil
+		}
+	}
 }
 
 // MARK: - Equating
