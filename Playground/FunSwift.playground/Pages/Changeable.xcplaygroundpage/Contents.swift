@@ -18,7 +18,7 @@ let person = Person(firstName: "Jane", lastName: "Doe")
 let changeablePerson =
 	Changeable(value: person, hasChanges: false)
 	>>- write("Jane", at: \.firstName)
-	>>- write("Doe Jr", at: \.lastName)
+	>>- write("Doe", at: \.lastName)
 
 changeablePerson.hasChanges
 	? print("Was changed")

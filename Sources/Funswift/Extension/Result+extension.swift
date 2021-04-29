@@ -33,6 +33,15 @@ extension Result {
 		f(value)
 		return self
 	}
+
+    public init(either: Either<Failure, Success>) {
+        switch either {
+        case let .left(error):
+            self = .failure(error)
+        case let .right(success):
+            self = .success(success)
+        }
+    }
 }
 
 
