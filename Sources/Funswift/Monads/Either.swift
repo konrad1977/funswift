@@ -12,7 +12,28 @@ public enum Either<E, B> {
 	case left(E)
 	case right(B)
 
-	// MARK: - Functor
+    public init(cathing body: () throws -> B) where E == Error {
+        do {
+            let result: B = try body()
+            self = .right(result)
+        } catch {
+            self = .left(error)
+        }
+    }
+
+    public init(result: Result<B, Error>) where E == Error {
+        switch result {
+        case let .success(value):
+            self = .right(value)
+        case let .failure(error):
+            self = .left(error)
+        }
+    }
+}
+
+// MARK: - Functor
+extension Either {
+
 	public func map<C>(_ f: (B) -> C) -> Either<E, C> {
 		switch self {
 		case let .left(value):
@@ -22,7 +43,27 @@ public enum Either<E, B> {
 		}
 	}
 
-	// MARK: - Monad
+	public func biMap<C, F>(_ f: (B) -> C, _ g: (E) -> F) -> Either<F, C> {
+		switch self {
+		case let .left(value):
+			return Either<F, C>.left(g(value))
+		case let .right(value):
+			return Either<F, C>.right(f(value))
+		}
+	}
+
+	public func lMap<F>(_ f: (E) -> F) -> Either<F, B> {
+		switch self {
+		case let .left(value):
+			return Either<F, B>.left(f(value))
+		case let .right(value):
+			return Either<F, B>.right(value)
+		}
+	}
+}
+
+// MARK: - Monad
+extension Either {
 	public func flatMap<C>(_ f: (B) -> Either<E, C>) -> Either<E, C> {
 		switch self {
 		case let .left(value):
@@ -30,6 +71,40 @@ public enum Either<E, B> {
 		case let .right(value):
 			return f(value)
 		}
+	}
+}
+
+// MARK: Values
+extension Either {
+
+	@discardableResult
+	public func onRight(_ f: (B) -> Void) -> Self {
+		guard case let .right(value) = self
+		else { return self }
+		f(value)
+		return self
+	}
+
+	@discardableResult
+	public func onLeft(_ f: (E) -> Void) -> Self {
+		guard case let .left(value) = self
+		else { return self }
+		f(value)
+		return self
+	}
+
+	public func isRight() -> Bool {
+		if case .right = self {
+			return true
+		}
+		return false
+	}
+
+	public func isLeft() -> Bool {
+		if case .left = self {
+			return true
+		}
+		return false
 	}
 
 	public func right() -> B? {
@@ -49,24 +124,6 @@ public enum Either<E, B> {
 			return nil
 		}
 	}
-
-    public init(cathing body: () throws -> B) where E == Error {
-        do {
-            let result: B = try body()
-            self = .right(result)
-        } catch {
-            self = .left(error)
-        }
-    }
-
-    public init(result: Result<B, Error>) where E == Error {
-        switch result {
-        case let .success(value):
-            self = .right(value)
-        case let .failure(error):
-            self = .left(error)
-        }
-    }
 }
 
 // MARK: - Equating
