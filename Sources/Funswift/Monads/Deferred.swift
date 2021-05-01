@@ -10,8 +10,10 @@ import Foundation
 public struct Deferred<A> {
 
     public typealias Promise = (@escaping (A) -> Void) -> Void
+    public typealias Cancel = () -> Void
 
     public let run: Promise
+    public var cancel: Cancel?
 
     public init(_ run: @escaping Promise) {
         self.run = run
