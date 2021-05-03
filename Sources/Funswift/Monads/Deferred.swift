@@ -7,20 +7,19 @@
 
 import Foundation
 
+enum DeferredError: Error {
+    case canceledByUser
+}
+
 public struct Deferred<A> {
 
     public typealias Promise = (@escaping (A) -> Void) -> Void
     public typealias Cancel = () -> Void
 
     public let run: Promise
-    public var cancel: Cancel?
+    public var onCancel: Cancel?
 
     public init(_ run: @escaping Promise) {
-        self.run = run
-    }
-
-    public init(cancelation: Cancel? = nil, _ run: @escaping Promise) {
-        self.cancel = cancelation
         self.run = run
     }
 
@@ -77,6 +76,14 @@ extension Deferred: GenericTypeConstructor {
 			self.run { callback($0.map(f)) }
 		}
 	}
+}
+
+// MARK: - Cancelation
+extension Deferred {
+
+    public func cancel() {
+        self.onCancel?()
+    }
 }
 
 // MARK: - Delay

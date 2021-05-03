@@ -209,4 +209,16 @@ final class DeferredTests: XCTestCase {
 
 		wait(for: [expectation], timeout: 0.55)
 	}
+
+    func testCancelation() {
+        let expectation = XCTestExpectation(description: "Waiting")
+        var result = Deferred.delayed(by: 0.8) { 10 }
+
+        result.onCancel = {
+            expectation.fulfill()
+        }
+        result.cancel()
+
+        wait(for: [expectation], timeout: 1)
+    }
 }
