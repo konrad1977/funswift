@@ -19,11 +19,10 @@ public struct Deferred<A> {
         self.run = run
     }
 
-    public init(_ run: @escaping Promise, _ cancel: Cancel? = nil) {
+    public init(cancelation: Cancel? = nil, _ run: @escaping Promise) {
+        self.cancel = cancelation
         self.run = run
-        self.cancel = cancel
     }
-
 
 	public init(io: IO<A>) {
 		self.init(io.unsafeRun())
