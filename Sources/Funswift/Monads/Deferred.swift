@@ -42,7 +42,7 @@ public struct Deferred<A> {
     }
 }
 
-// MARK: - map/mapT
+// MARK: - functors map/mapT
 extension Deferred: GenericTypeConstructor {
 
     public typealias ParamtricType = A
@@ -61,10 +61,10 @@ extension Deferred: GenericTypeConstructor {
         }
     }
 
-    public func mapT <Input, Output, E: Error> (
+    public func mapT <Input, Output> (
         _ f: @escaping (Input) -> Output
-    ) -> Deferred<Result<Output, E>> where ParamtricType == Result<Input, E> {
-        Deferred<Result<Output, E>> { callback in
+    ) -> Deferred<Result<Output, Error>> where ParamtricType == Result<Input, Error> {
+        Deferred<Result<Output, Error>> { callback in
             self.run { callback($0.map(f)) }
         }
     }
