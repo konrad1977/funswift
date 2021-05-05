@@ -11,8 +11,8 @@ enum DeferredError: Error {
     case canceledByUser
 }
 
-public struct Deferred<A> {
-
+public struct Deferred<A>: GenericTypeConstructor {
+	public typealias ParamtricType = A
     public typealias Promise = (@escaping (A) -> Void) -> Void
     public typealias Cancel = () -> Void
 
@@ -34,18 +34,10 @@ public struct Deferred<A> {
 			}
 		}
 	}
-
-    public func flatMap<B>(_ f: @escaping (A) -> Deferred<B>) -> Deferred<B> {
-        Deferred<B> { callbackB in
-            self.run { f($0).run { callbackB($0) } }
-        }
-    }
 }
 
 // MARK: - functors map/mapT
-extension Deferred: GenericTypeConstructor {
-
-    public typealias ParamtricType = A
+extension Deferred {
 
 	public func map<B>(_ f: @escaping (A) -> B) -> Deferred<B> {
 		Deferred<B> { callback in
@@ -74,6 +66,40 @@ extension Deferred: GenericTypeConstructor {
 	) -> Deferred<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
 		Deferred<Either<Left, Output>> { callback in
 			self.run { callback($0.map(f)) }
+		}
+	}
+}
+
+// MARK: - flatMap/flatMapT
+extension Deferred {
+
+	public func flatMap<B>(_ f: @escaping (A) -> Deferred<B>) -> Deferred<B> {
+		Deferred<B> { callbackB in
+			self.run { f($0).run { callbackB($0) } }
+		}
+	}
+
+	public func flatMapT <Input,Output> (
+		_ f: @escaping (Input) -> Optional<Output>
+	) -> Deferred<Optional<Output>> where ParamtricType == Optional<Input> {
+		Deferred<Optional<Output>> { callback in
+			self.run { callback($0.flatMap(f)) }
+		}
+	}
+
+	public func flatMapT <Input, Output> (
+		_ f: @escaping (Input) -> Result<Output, Error>
+	) -> Deferred<Result<Output, Error>> where ParamtricType == Result<Input, Error> {
+		Deferred<Result<Output, Error>> { callback in
+			self.run { callback($0.flatMap(f)) }
+		}
+	}
+
+	public func flatMapT <Input, Output, Left> (
+		_ f: @escaping (Input) -> Either<Left, Output>
+	) -> Deferred<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
+		Deferred<Either<Left, Output>> { callback in
+			self.run { callback($0.flatMap(f)) }
 		}
 	}
 }

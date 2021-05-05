@@ -7,20 +7,13 @@
 
 import Foundation
 
-public struct IO<A> {
+public struct IO<A>: GenericTypeConstructor {
 
+	public typealias ParamtricType = A
 	public let unsafeRun: () -> A
 
 	public init(_ run: @escaping () -> A) {
 		self.unsafeRun = run
-	}
-
-	public func map<B>(_ f: @escaping (A) -> B) -> IO<B> {
-		IO<B> { f(self.unsafeRun()) }
-	}
-
-	public func flatMap<B>(_ f: @escaping (A) -> IO<B>) -> IO<B> {
-		IO<B> { f(self.unsafeRun()).unsafeRun() }
 	}
 }
 
@@ -30,9 +23,12 @@ extension IO: Equatable where A: Equatable {
 	}
 }
 
-extension IO: GenericTypeConstructor {
+// MARK: - functors map/mapT
+extension IO {
 
-    public typealias ParamtricType = A
+	public func map<B>(_ f: @escaping (A) -> B) -> IO<B> {
+		IO<B> { f(self.unsafeRun()) }
+	}
 
     public func mapT <Input,Output> (
         _ f: @escaping (Input) -> Output
@@ -53,6 +49,31 @@ extension IO: GenericTypeConstructor {
 	}
 }
 
+// MARK: - flatMap/flatMapT
+extension IO {
+
+	public func flatMap<B>(_ f: @escaping (A) -> IO<B>) -> IO<B> {
+		IO<B> { f(self.unsafeRun()).unsafeRun() }
+	}
+
+	public func flatMapT <Input,Output> (
+		_ f: @escaping (Input) -> Optional<Output>
+	) -> IO<Optional<Output>> where ParamtricType == Optional<Input> {
+		IO<Optional<Output>> { self.unsafeRun().flatMap(f) }
+	}
+
+	public func flatMapT <Input, Output> (
+		_ f: @escaping (Input) -> Result<Output, Error>
+	) -> IO<Result<Output, Error>> where ParamtricType == Result<Input, Error> {
+		IO<Result<Output, Error>> { self.unsafeRun().flatMap(f) }
+	}
+
+	public func flatMapT <Input, Output, Left> (
+		_ f: @escaping (Input) -> Either<Left, Output>
+	) -> IO<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
+		IO<Either<Left, Output>> { self.unsafeRun().flatMap(f) }
+	}
+}
 
 extension IO {
 
@@ -83,7 +104,6 @@ extension IO {
 
     public init(deferred: Deferred<A>) {
         self.init {
-
             let dispatchGroup = DispatchGroup()
             let queue = DispatchQueue(label: "funswift.deferred.queue")
             var result: A?
