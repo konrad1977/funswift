@@ -7,5 +7,6 @@
         <page name='Reader'/>
         <page name='Deferred'/>
         <page name='Optionals'/>
+        <page name='Cont'/>
     </pages>
 </playground>

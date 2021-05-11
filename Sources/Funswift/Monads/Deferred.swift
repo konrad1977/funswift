@@ -12,6 +12,7 @@ enum DeferredError: Error {
 }
 
 public struct Deferred<A>: GenericTypeConstructor {
+	
 	public typealias ParamtricType = A
     public typealias Promise = (@escaping (A) -> Void) -> Void
     public typealias Cancel = () -> Void
