@@ -4,8 +4,6 @@ public protocol Semigroup {
     static func + (_ lhs: Self, _ rhs: Self) -> Self
 }
 
-//extension Int: Semigroup { }
-//extension Double: Semigroup {}
 extension Numeric where Self: Semigroup {}
 
 extension String: Semigroup {}

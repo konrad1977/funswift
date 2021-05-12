@@ -106,5 +106,17 @@ public func <*><A, B>(
 	rhs.map(lhs.value)
 }
 
-
-
+// MARK: - Changeable Applicative
+public func <*><A, B, R>(
+    _ lhs: Cont<(A) -> B, R>,
+    _ rhs: Cont<A, R>
+) -> Cont<B, R> {
+    
+    Cont<B, R> { cont in
+        lhs.run { innerC in
+            rhs.map(innerC).run { result in
+                cont(result)
+            }
+        }
+    }
+}

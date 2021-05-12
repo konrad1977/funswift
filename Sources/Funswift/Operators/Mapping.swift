@@ -142,3 +142,18 @@ public func <&><A, B, S>(
 ) -> State<S, B> {
 	return { lhs.map(g) }()
 }
+
+// MARK: - Cont
+public func <&><A, B, C, R>(
+    _ f: @escaping (A) -> Cont<B, R>,
+    _ g: @escaping (B) -> C
+) -> (A) -> Cont<C, R> {
+    return { f($0).map(g) }
+}
+
+public func <&><A, B, R>(
+    _ lhs: Cont<A, R>,
+    _ g: @escaping (A) -> B
+) -> Cont<B, R> {
+    return { lhs.map(g) }()
+}
