@@ -8,5 +8,6 @@
         <page name='Deferred'/>
         <page name='Optionals'/>
         <page name='Cont'/>
+        <page name='Writer'/>
     </pages>
 </playground>
