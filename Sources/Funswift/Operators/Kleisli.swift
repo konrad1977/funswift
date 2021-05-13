@@ -97,3 +97,11 @@ public func >=> <A, B, C, S>(
 ) -> (A) -> State<S, C> {
 	return { f($0).flatMap(g) }
 }
+
+// MARK: - Cont
+public func >=> <A, B, C, R>(
+    _ f: @escaping (A) -> Cont<B, R>,
+    _ g: @escaping (B) -> Cont<C, R>
+) -> (A) -> Cont<C, R> {
+    return { f($0).flatMap(g) }
+}

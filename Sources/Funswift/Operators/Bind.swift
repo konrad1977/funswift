@@ -79,3 +79,11 @@ public func >>- <A, B, S>(
 ) -> State<S, B> {
 	lhs.flatMap(transform)
 }
+
+// MARK: - Cont
+public func >>- <A, B, R>(
+    _ lhs:  Cont<A, R>,
+    _ transform: @escaping (A) -> Cont<B, R>
+) -> Cont<B, R> {
+    lhs.flatMap(transform)
+}
