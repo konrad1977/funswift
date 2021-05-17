@@ -221,4 +221,27 @@ final class DeferredTests: XCTestCase {
 
         wait(for: [expectation], timeout: 1)
     }
+
+	func testAnyCanceableDeferred() {
+		
+		var deferredWithInt = Deferred.delayed(by: 0.1) { 10 }
+		var deferredWithString = Deferred.delayed(by: 0.1) { "Hello World" }
+
+		let expectationInt = XCTestExpectation(description: "WaitingInt")
+		let expectationString = XCTestExpectation(description: "WaitingString")
+
+		deferredWithInt.onCancel = {
+			expectationInt.fulfill()
+		}
+
+		deferredWithString.onCancel = {
+			expectationString.fulfill()
+		}
+
+		let canceable: [AnyCanceableDeferred] = [deferredWithInt, deferredWithString]
+		canceable.forEach { $0.cancel() }
+
+		wait(for: [expectationInt, expectationString], timeout: 2)
+
+	}
 }

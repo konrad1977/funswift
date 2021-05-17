@@ -7,7 +7,11 @@
 
 import Foundation
 
-enum DeferredError: Error {
+public protocol AnyCanceableDeferred {
+	func cancel()
+}
+
+public enum DeferredError: Error {
     case canceledByUser
 }
 
@@ -106,7 +110,7 @@ extension Deferred {
 }
 
 // MARK: - Cancelation
-extension Deferred {
+extension Deferred: AnyCanceableDeferred {
 
     public func cancel() {
         self.onCancel?()
