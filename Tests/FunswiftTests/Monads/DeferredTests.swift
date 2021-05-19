@@ -214,6 +214,10 @@ final class DeferredTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Waiting")
         var result = Deferred.delayed(by: 0.8) { 10 }
 
+        result.runCancellation = {
+            print("Cancel something")
+        }
+
         result.onCancel = {
             expectation.fulfill()
         }
@@ -230,13 +234,21 @@ final class DeferredTests: XCTestCase {
 		let expectationInt = XCTestExpectation(description: "WaitingInt")
 		let expectationString = XCTestExpectation(description: "WaitingString")
 
-		deferredWithInt.onCancel = {
-			expectationInt.fulfill()
-		}
+        deferredWithInt.onCancel = {
+            expectationInt.fulfill()
+        }
 
-		deferredWithString.onCancel = {
-			expectationString.fulfill()
-		}
+        deferredWithString.onCancel = {
+            expectationString.fulfill()
+        }
+
+        deferredWithInt.runCancellation = {
+            print("Will cancel int")
+        }
+
+        deferredWithString.runCancellation = {
+            print("Will cancel string")
+        }
 
 		let canceable: [AnyCanceableDeferred] = [deferredWithInt, deferredWithString]
 		canceable.forEach { $0.cancel() }

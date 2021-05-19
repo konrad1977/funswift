@@ -22,7 +22,9 @@ public struct Deferred<A>: GenericTypeConstructor {
     public typealias Cancel = () -> Void
 
     public let run: Promise
+
     public var onCancel: Cancel?
+    public var runCancellation: Cancel?
 
     public init(_ run: @escaping Promise) {
         self.run = run
@@ -113,6 +115,10 @@ extension Deferred {
 extension Deferred: AnyCanceableDeferred {
 
     public func cancel() {
+        guard let cancellation = runCancellation
+        else { return }
+
+        cancellation()
         self.onCancel?()
     }
 }
