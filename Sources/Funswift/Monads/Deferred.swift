@@ -32,7 +32,7 @@ public struct Deferred<A>: GenericTypeConstructor {
 
     public init(_ run: @escaping Promise, cancel: CancellationToken? = nil) {
         self.run = run
-        self.onCancel = cancel
+        self.cancellations = [cancel]
     }
 
 	public init(io: IO<A>) {
@@ -120,12 +120,6 @@ extension Deferred {
 extension Deferred: AnyCancellableDeferred {
 
     public func cancel() {
-
-        if cancellations.isEmpty {
-            onCancel?()
-            return
-        }
-
         cancellations.compactMap(identity)
             .forEach { $0() }
     }

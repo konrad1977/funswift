@@ -268,9 +268,28 @@ final class DeferredTests: XCTestCase {
             expectationString.fulfill()
         }
 
-        zip(deferredWithInt, deferredWithString)
-            .cancel()
+        let newResult = zip(deferredWithInt, deferredWithString)
+        newResult.cancel()
+
+        debugPrint(newResult)
 
         wait(for: [expectationInt, expectationString], timeout: 2)
+    }
+
+    func testCancelThenMap() {
+
+        var deferredWithInt = Deferred
+            .delayed(by: 0.1) { 10 }
+            .map(String.init)
+
+        let expectation = XCTestExpectation(description: "WaitingInt")
+
+        deferredWithInt.onCancel = {
+            expectation.fulfill()
+        }
+
+        deferredWithInt.cancel()
+        debugPrint(deferredWithInt)
+        wait(for: [expectation], timeout: 1)
     }
 }
