@@ -240,7 +240,7 @@ final class DeferredTests: XCTestCase {
             expectationString.fulfill()
         }
 
-		let canceable: [AnyCanceableDeferred] = [deferredWithInt, deferredWithString]
+		let canceable: [AnyCancellableDeferred] = [deferredWithInt, deferredWithString]
 		canceable.forEach { $0.cancel() }
 
 		wait(for: [expectationInt, expectationString], timeout: 2)

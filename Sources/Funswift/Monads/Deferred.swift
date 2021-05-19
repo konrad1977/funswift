@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol AnyCanceableDeferred {
+public protocol AnyCancellableDeferred {
 	func cancel()
 }
 
@@ -18,19 +18,19 @@ public enum DeferredError: Error {
 public struct Deferred<A>: GenericTypeConstructor {
 	
 	public typealias ParamtricType = A
+    public typealias CancellationToken = () -> Void
     public typealias Promise = (@escaping (A) -> Void) -> Void
-    public typealias Cancel = () -> Void
 
-    fileprivate var cancellations: [Cancel?] = []
+    fileprivate var cancellations: [CancellationToken?] = []
 
     public let run: Promise
-    public var onCancel: Cancel? {
+    public var onCancel: CancellationToken? {
         didSet {
-            cancellations.append(cancel)
+            cancellations = [onCancel]
         }
     }
 
-    public init(_ run: @escaping Promise, cancel: Cancel? = nil) {
+    public init(_ run: @escaping Promise, cancel: CancellationToken? = nil) {
         self.run = run
         self.onCancel = cancel
     }
@@ -117,7 +117,7 @@ extension Deferred {
 }
 
 // MARK: - Cancelation
-extension Deferred: AnyCanceableDeferred {
+extension Deferred: AnyCancellableDeferred {
 
     public func cancel() {
         cancellations.compactMap(identity)

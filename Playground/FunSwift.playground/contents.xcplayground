@@ -9,5 +9,6 @@
         <page name='Optionals'/>
         <page name='Cont'/>
         <page name='Writer'/>
+        <page name='sandbox'/>
     </pages>
 </playground>

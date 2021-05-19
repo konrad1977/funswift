@@ -19,7 +19,6 @@ func delay<A>(by interval: TimeInterval, work: @escaping () -> A) -> A {
     return result!
 }
 
-
 zip(
     Deferred(delay(by: 1, work: { 10 + 10 })),
     Deferred(delay(by: 2, work: { 10 * 10 })),
