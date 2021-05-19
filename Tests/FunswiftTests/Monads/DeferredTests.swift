@@ -244,6 +244,33 @@ final class DeferredTests: XCTestCase {
 		canceable.forEach { $0.cancel() }
 
 		wait(for: [expectationInt, expectationString], timeout: 2)
-
 	}
+
+    func testCancelZip() {
+
+        var deferredWithInt = Deferred
+            .delayed(by: 0.1) { 10 }
+            .map(String.init)
+
+        var deferredWithString = Deferred
+            .delayed(by: 0.1) { "Hello World" }
+
+        let expectationInt = XCTestExpectation(description: "WaitingInt")
+        let expectationString = XCTestExpectation(description: "WaitingString")
+
+        deferredWithInt.onCancel = {
+            print("Cancel first")
+            expectationInt.fulfill()
+        }
+
+        deferredWithString.onCancel = {
+            print("cancel second")
+            expectationString.fulfill()
+        }
+
+        zip(deferredWithInt, deferredWithString)
+            .cancel()
+
+        wait(for: [expectationInt, expectationString], timeout: 2)
+    }
 }

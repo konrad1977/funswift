@@ -21,8 +21,14 @@ public struct Deferred<A>: GenericTypeConstructor {
     public typealias Promise = (@escaping (A) -> Void) -> Void
     public typealias Cancel = () -> Void
 
+    fileprivate var cancellations: [Cancel?] = []
+
     public let run: Promise
-    public var onCancel: Cancel?
+    public var onCancel: Cancel? {
+        didSet {
+            cancellations.append(cancel)
+        }
+    }
 
     public init(_ run: @escaping Promise, cancel: Cancel? = nil) {
         self.run = run
@@ -114,9 +120,8 @@ extension Deferred {
 extension Deferred: AnyCanceableDeferred {
 
     public func cancel() {
-        guard let onCancel = onCancel
-        else { return }
-        onCancel()
+        cancellations.compactMap(identity)
+            .forEach { $0() }
     }
 }
 
@@ -167,7 +172,7 @@ public func zip<A, B>(
     _ rhs: Deferred<B>
 ) -> Deferred<(A, B)> {
 
-    return Deferred<(A, B)> { callback in
+    var result = Deferred<(A, B)> { callback in
 
         let dispatchGroup = DispatchGroup()
 		let queue = DispatchQueue(label: "Deferred.Queue")
@@ -192,6 +197,8 @@ public func zip<A, B>(
             }
         }
     }
+    result.cancellations = [lhs.onCancel, rhs.onCancel]
+    return result
 }
 
 public func zip<A, B, C>(
