@@ -23,6 +23,10 @@ public struct Deferred<A>: GenericTypeConstructor {
 
     fileprivate var cancellations: [CancellationToken?] = []
 
+    public var canCancel: Bool {
+        get { cancellations.isEmpty == false }
+    }
+
     public let run: Promise
     public var onCancel: CancellationToken? {
         didSet {
@@ -32,6 +36,7 @@ public struct Deferred<A>: GenericTypeConstructor {
 
     public init(_ run: @escaping Promise, cancel: CancellationToken? = nil) {
         self.run = run
+        self.onCancel = cancel
         self.cancellations = [cancel]
     }
 
