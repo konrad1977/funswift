@@ -120,6 +120,12 @@ extension Deferred {
 extension Deferred: AnyCancellableDeferred {
 
     public func cancel() {
+
+        if cancellations.isEmpty {
+            onCancel?()
+            return
+        }
+
         cancellations.compactMap(identity)
             .forEach { $0() }
     }
@@ -299,4 +305,16 @@ public func zip<A, B, C, D, E, F, G, H, I, J>(
 ) -> Deferred<(A, B, C, D, E, F, G, H, I, J)> {
     zip(first, zip(second, third, forth, fifth, sixth, seventh, eigth, ninth, tenth))
         .map { ($0, $1.0, $1.1, $1.2, $1.3, $1.4, $1.5, $1.6, $1.7, $1.8) }
+}
+
+
+extension Deferred: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        """
+        Deferred {
+            cancellelations: \(cancellations.count)
+            onCancel: \(onCancel == nil ? "Nil" : "(Function)")
+        }
+        """
+    }
 }
