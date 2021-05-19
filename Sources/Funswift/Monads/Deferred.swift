@@ -22,12 +22,11 @@ public struct Deferred<A>: GenericTypeConstructor {
     public typealias Cancel = () -> Void
 
     public let run: Promise
-
     public var onCancel: Cancel?
-    public var runCancellation: Cancel?
 
-    public init(_ run: @escaping Promise) {
+    public init(_ run: @escaping Promise, cancel: Cancel? = nil) {
         self.run = run
+        self.onCancel = cancel
     }
 
 	public init(io: IO<A>) {
@@ -47,33 +46,33 @@ public struct Deferred<A>: GenericTypeConstructor {
 extension Deferred {
 
 	public func map<B>(_ f: @escaping (A) -> B) -> Deferred<B> {
-		Deferred<B> { callback in
+		Deferred<B>({ callback in
 			self.run { callback(f($0)) }
-		}
+        },  cancel: onCancel)
 	}
 
     public func mapT <Input,Output> (
         _ f: @escaping (Input) -> Output
     ) -> Deferred<Optional<Output>> where ParamtricType == Optional<Input> {
-        Deferred<Optional<Output>> { callback in
+        Deferred<Optional<Output>> ({ callback in
             self.run { callback($0.map(f)) }
-        }
+        }, cancel: onCancel)
     }
 
     public func mapT <Input, Output> (
         _ f: @escaping (Input) -> Output
     ) -> Deferred<Result<Output, Error>> where ParamtricType == Result<Input, Error> {
-        Deferred<Result<Output, Error>> { callback in
+        Deferred<Result<Output, Error>> ({ callback in
             self.run { callback($0.map(f)) }
-        }
+        }, cancel: onCancel)
     }
 
 	public func mapT <Input, Output, Left> (
 		_ f: @escaping (Input) -> Output
 	) -> Deferred<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
-		Deferred<Either<Left, Output>> { callback in
+		Deferred<Either<Left, Output>> ({ callback in
 			self.run { callback($0.map(f)) }
-		}
+		}, cancel: onCancel)
 	}
 }
 
@@ -81,33 +80,33 @@ extension Deferred {
 extension Deferred {
 
 	public func flatMap<B>(_ f: @escaping (A) -> Deferred<B>) -> Deferred<B> {
-		Deferred<B> { callbackB in
+		Deferred<B> ({ callbackB in
 			self.run { f($0).run { callbackB($0) } }
-		}
+		}, cancel: onCancel)
 	}
 
 	public func flatMapT <Input,Output> (
 		_ f: @escaping (Input) -> Optional<Output>
 	) -> Deferred<Optional<Output>> where ParamtricType == Optional<Input> {
-		Deferred<Optional<Output>> { callback in
+		Deferred<Optional<Output>>({ callback in
 			self.run { callback($0.flatMap(f)) }
-		}
+		}, cancel: onCancel)
 	}
 
 	public func flatMapT <Input, Output> (
 		_ f: @escaping (Input) -> Result<Output, Error>
 	) -> Deferred<Result<Output, Error>> where ParamtricType == Result<Input, Error> {
-		Deferred<Result<Output, Error>> { callback in
+		Deferred<Result<Output, Error>> ({ callback in
 			self.run { callback($0.flatMap(f)) }
-		}
+		}, cancel: onCancel)
 	}
 
 	public func flatMapT <Input, Output, Left> (
 		_ f: @escaping (Input) -> Either<Left, Output>
 	) -> Deferred<Either<Left, Output>> where ParamtricType == Either<Left, Input> {
-		Deferred<Either<Left, Output>> { callback in
+		Deferred<Either<Left, Output>> ({ callback in
 			self.run { callback($0.flatMap(f)) }
-		}
+		}, cancel: onCancel)
 	}
 }
 
@@ -115,11 +114,9 @@ extension Deferred {
 extension Deferred: AnyCanceableDeferred {
 
     public func cancel() {
-        guard let cancellation = runCancellation
+        guard let onCancel = onCancel
         else { return }
-
-        cancellation()
-        self.onCancel?()
+        onCancel()
     }
 }
 
