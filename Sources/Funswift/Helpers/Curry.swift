@@ -1,3 +1,10 @@
+//
+//  Curry.swift
+//
+//
+//  Created by Mikael Konradsson on 2021-04-07.
+//
+
 import Foundation
 
 public func curry<A, B, Output>(
@@ -28,4 +35,16 @@ public func curry<A, B, C, D, E, F, Output>(
 	_ transform: @escaping (A, B, C, D, E, F) -> Output
 ) -> (A) -> (B) -> (C) -> (D) -> (E) -> (F) -> Output {
     return { a in { b in { c in { d in { e in { f in transform(a,b,c,d,e,f) } } } } } }
+}
+
+public func curry<A, B, C, D, E, F, G, Output>(
+    _ transform: @escaping (A, B, C, D, E, F, G) -> Output
+) -> (A) -> (B) -> (C) -> (D) -> (E) -> (F) -> (G) ->  Output {
+    return { a in { b in { c in { d in { e in { f in { g in transform(a,b,c,d,e,f,g) }  } } } } } }
+}
+
+public func curry<A, B, C, D, E, F, G, H, Output>(
+    _ transform: @escaping (A, B, C, D, E, F, G, H) -> Output
+) -> (A) -> (B) -> (C) -> (D) -> (E) -> (F) -> (G) -> (H) ->  Output {
+    return { a in { b in { c in { d in { e in { f in { g in { h in transform(a,b,c,d,e,f,g, h) } }  } } } } } }
 }
