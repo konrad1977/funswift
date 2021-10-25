@@ -24,15 +24,15 @@ public struct Predicate<A> {
 
 extension Predicate {
 
-	func union(other: Predicate) -> Predicate {
+	public func union(other: Predicate) -> Predicate {
 		Predicate { self.contains($0) || other.contains($0) }
 	}
 
-	func intersect(other: Predicate) -> Predicate {
+    public func intersect(other: Predicate) -> Predicate {
 		Predicate { self.contains($0) && other.contains($0) }
 	}
 
-	func inverted() -> Predicate {
+    public func inverted() -> Predicate {
 		Predicate { !self.contains($0) }
 	}
 }
