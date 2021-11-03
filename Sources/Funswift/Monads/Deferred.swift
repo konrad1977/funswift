@@ -125,7 +125,8 @@ extension Deferred {
 extension Deferred: AnyCancellableDeferred {
 
     public func cancel() {
-        cancellations.compactMap(identity)
+        cancellations
+			.compactMap(identity)
             .forEach { $0() }
     }
 }

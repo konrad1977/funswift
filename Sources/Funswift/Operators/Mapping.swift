@@ -10,9 +10,9 @@ infix operator <&>: MapCompose
 
 // MARK:- Optionals
 public func <&><A, B, C>(
-    _ f: @escaping (A) -> B?,
+    _ f: @escaping (A) -> Optional<B>,
     _ g: @escaping (B) -> C
-) -> (A) -> C? {
+) -> (A) -> Optional<C> {
     return { f($0).map(g) }
 }
 
@@ -40,9 +40,9 @@ public func <&><A, B>(
 
 // MARK:- Arrays
 public func <&><A, B, C>(
-    _ f: @escaping (A) -> [B],
+    _ f: @escaping (A) -> Array<B>,
     _ g: @escaping (B) -> C
-) -> (A) -> [C] {
+) -> (A) -> Array<C> {
     return { f($0).map(g) }
 }
 

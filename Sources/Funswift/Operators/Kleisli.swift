@@ -83,13 +83,6 @@ public func >=> <A, B, C, M: Monoid>(
 	return { f($0).flatMap(g) }
 }
 
-public func >=> <A, B, C, M: Monoid>(
-    _ f: @escaping (A) -> Writer<B, M>,
-    _ g: @escaping (B) -> C
-) -> (A) -> Writer<C, M> {
-    return { f($0).map(g) }
-}
-
 // MARK: - State
 public func >=> <A, B, C, S>(
 	_ f: @escaping (A) -> State<S, B>,
